@@ -48,6 +48,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -82,6 +83,11 @@ public class RssServlet extends HttpServlet {
 	private static final String GENERATOR = RssServlet.class.getName() + " 1.0";
 
 	private static final String DOCS = "https://cyber.harvard.edu/rss/rss.html";
+
+	/**
+	 * The default max items to include.
+	 */
+	private static final int DEFAULT_MAX_ITEMS = 20;
 
 	/**
 	 * Gets a book parameter, null if empty.
@@ -270,7 +276,21 @@ public class RssServlet extends HttpServlet {
 		// textInput not supported
 		// skipHours not supported
 		// skipDays not supported
-		for(News news : NewsUtils.findAllNews(servletContext, req, resp, page)) {
+		int maxItems;
+		{
+			String maxItemsVal = getBookParam(bookParams, CHANNEL_PARAM_PREFIX + "maxItems");
+			if(maxItemsVal != null) {
+				maxItems = Integer.parseInt(maxItemsVal);
+				if(maxItems < 1) throw new ServletException("RSS maxItems may not be less than one: " + maxItems);
+			} else {
+				maxItems = DEFAULT_MAX_ITEMS;
+			}
+		}
+		List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page);
+		int numItems = allNews.size();
+		if(numItems > maxItems) numItems = maxItems;
+		for(int i=0; i<numItems; i++) {
+			News news = allNews.get(i);
 			out.println("        <item>");
 			out.print("            <title>");
 			encodeTextInXhtml(news.getTitle(), out);

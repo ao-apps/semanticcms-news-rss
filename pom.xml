@@ -38,6 +38,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 	<name>SemanticCMS News RSS</name>
 	<url>https://semanticcms.com/news/rss/</url>
 	<description>RSS feeds for SemanticCMS newsfeeds.</description>
+	<inceptionYear>2016</inceptionYear>
 
 	<scm>
 		<connection>scm:git:git://github.com/aoindustries/semanticcms-news-rss.git</connection>

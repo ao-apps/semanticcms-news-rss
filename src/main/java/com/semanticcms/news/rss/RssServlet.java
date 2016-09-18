@@ -286,7 +286,7 @@ public class RssServlet extends HttpServlet {
 				maxItems = DEFAULT_MAX_ITEMS;
 			}
 		}
-		List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page);
+		List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page.getPageRef());
 		int numItems = allNews.size();
 		if(numItems > maxItems) numItems = maxItems;
 		for(int i=0; i<numItems; i++) {
@@ -329,6 +329,9 @@ public class RssServlet extends HttpServlet {
 				// Capture news now in "body" mode, since findAllNews only did meta for fast search
 				// TODO: body: Is there a way to capture news at "body" level while other parts at "meta" level?
 				//       This recapturing is clunky and full body capture of all would be inefficient.
+				// TODO: Concurrency: Is limited concurrent capture possible here?
+				//       If concurrency at 16, for example, could we reasonably dispatch concurrent capturePageInBook
+				//       while serializing to write on the main thread?
 				Element recaptured = CapturePage.capturePage(servletContext, req, resp, pageRef, CaptureLevel.BODY).getElementsById().get(news.getId());
 				if(!(recaptured instanceof News)) throw new ServletException("recaptured is not news: " + recaptured.getClass().getName());
 				if(recaptured.getBody().getLength() > 0) {

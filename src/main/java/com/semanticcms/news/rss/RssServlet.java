@@ -286,7 +286,7 @@ public class RssServlet extends HttpServlet {
 				maxItems = DEFAULT_MAX_ITEMS;
 			}
 		}
-		List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page.getPageRef());
+		List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page);
 		int numItems = allNews.size();
 		if(numItems > maxItems) numItems = maxItems;
 		for(int i=0; i<numItems; i++) {

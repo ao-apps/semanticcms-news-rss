@@ -26,6 +26,7 @@ import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.servlet.ServletContextCache;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.Copyright;
@@ -141,7 +142,7 @@ public class RssServlet extends HttpServlet {
 			try {
 				if(
 					!RssUtils.isProtectedExtension(pagePath)
-					&& servletContext.getResource(pagePath) != null
+					&& ServletContextCache.getResource(servletContext, pagePath) != null
 				) {
 					break;
 				}

@@ -59,7 +59,9 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 							<configuration>
 								<links>
 									<link>http://docs.oracle.com/javaee/6/api/</link>
+									<link>http://www.joda.org/joda-time/apidocs/</link>
 									<link>https://www.aoindustries.com/docs/ao-encoding/</link>
+									<link>https://www.aoindustries.com/docs/ao-io-buffer/</link>
 									<link>https://www.aoindustries.com/docs/aocode-public/</link>
 									<link>https://semanticcms.com/core/model/apidocs/</link>
 									<link>https://semanticcms.com/core/servlet/apidocs/</link>

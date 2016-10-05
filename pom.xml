@@ -125,7 +125,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<dependency>
 			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-news-view</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.1.0</version>
 		</dependency>
 	</dependencies>
 </project>

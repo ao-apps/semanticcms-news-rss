@@ -333,7 +333,10 @@ public class RssServlet extends HttpServlet {
 				// TODO: Concurrency: Is limited concurrent capture possible here?
 				//       If concurrency at 16, for example, could we reasonably dispatch concurrent capturePageInBook
 				//       while serializing to write on the main thread?
-				Element recaptured = CapturePage.capturePage(servletContext, req, resp, pageRef, CaptureLevel.BODY).getElementsById().get(news.getId());
+				String newsId = news.getId();
+				PageRef newsPageRef = news.getPage().getPageRef();
+				Element recaptured = CapturePage.capturePage(servletContext, req, resp, newsPageRef, CaptureLevel.BODY).getElementsById().get(newsId);
+				if(recaptured == null) throw new ServletException("recaptured failed: pageRef = " + newsPageRef + ", newsId = " + newsId);
 				if(!(recaptured instanceof News)) throw new ServletException("recaptured is not news: " + recaptured.getClass().getName());
 				if(recaptured.getBody().getLength() > 0) {
 					// TODO: Automatic absolute links on body content of news tags, resetting on capturing other pages, or do we just trust RSS to correctly do relative links?

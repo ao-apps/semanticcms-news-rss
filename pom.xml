@@ -32,7 +32,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 
 	<groupId>com.semanticcms</groupId>
 	<artifactId>semanticcms-news-rss</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>SemanticCMS News RSS</name>
@@ -44,7 +44,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<connection>scm:git:git://github.com/aoindustries/semanticcms-news-rss.git</connection>
 		<developerConnection>scm:git:git@github.com:aoindustries/semanticcms-news-rss.git</developerConnection>
 		<url>http://github.com/aoindustries/semanticcms-news-rss</url>
-		<tag>semanticcms-news-rss-1.1.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<profiles>

@@ -4,7 +4,7 @@ RSS feeds for [SemanticCMS newsfeeds](https://semanticcms.com/news/).
 ## Project Links
 * [Project Home](https://semanticcms.com/news/rss/)
 * [API Docs](https://semanticcms.com/news/rss/apidocs/)
-* [Maven Central Repository](https://search.maven.org/#search|gav|1|g:%22com.semanticcms%22%20AND%20a:%22semanticcms-news-rss%22)
+* [Maven Central Repository](https://search.maven.org/#search%7Cgav%7C1%7Cg:%22com.semanticcms%22%20AND%20a:%22semanticcms-news-rss%22)
 * [GitHub](https://github.com/aoindustries/semanticcms-news-rss)
 
 ## Contact Us

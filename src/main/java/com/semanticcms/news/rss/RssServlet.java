@@ -120,30 +120,50 @@ public class RssServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * The response is not given to getLastModified, but we need it for captures to get
+	 * the last modified.
+	 */
+	private static final String RESPONSE_IN_REQUEST_ATTRIBUTE = RssServlet.class.getName() + ".responseInRequest";
+
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Object old = req.getAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE);
+		try {
+			req.setAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE, resp);
+			super.service(req, resp);
+		} finally {
+			req.setAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE, old);
+		}
+	}
+
+	/**
+	 * Finds the page, returns {@code null} when not able to find the page.
+	 */
+	private static Page findPage(
+		ServletContext servletContext,
+		HttpServletRequest req,
+		HttpServletResponse resp,
+		SemanticCMS semanticCMS
+	) throws ServletException, IOException {
 		// Path extra info not allowed
 		if(req.getPathInfo() != null) {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
+			return null;
 		}
 		// Query string not allowed
 		if(req.getQueryString() != null) {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
+			return null;
 		}
 		String basePath;
 		{
 			String servletPath = req.getServletPath();
 			// Must end in expected extension
 			if(!servletPath.endsWith(RssUtils.EXTENSION)) {
-				resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-				return;
+				return null;
 			}
 			basePath = servletPath.substring(0, servletPath.length() - RssUtils.EXTENSION.length());
 		}
 		// Try to find the page, jspx, then jsp, then direct URL without extension
-		ServletContext servletContext = getServletContext();
 		String pagePath = null;
 		for (String extension : RssUtils.getResourceExtensions()) {
 			pagePath = basePath + extension;
@@ -160,39 +180,54 @@ public class RssServlet extends HttpServlet {
 		}
 		assert pagePath != null : "The last extension should be the default if none matched";
 		if(RssUtils.isProtectedExtension(pagePath)) {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
+			return null;
 		}
-		// Used several places below
-		SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
 		// Find book and path
 		Book book = semanticCMS.getBook(pagePath);
 		PageRef pageRef;
 		{
 			if(book == null) {
-				resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-				return;
+				return null;
 			}
 			pageRef = new PageRef(
 				book,
 				pagePath.substring(book.getPathPrefix().length())
 			);
 		}
-		Map<String,String> bookParams = book.getParam();
-		// Try to capture the page
-		Page page = CapturePage.capturePage(
+		// Capture the page
+		return CapturePage.capturePage(
 			servletContext,
 			req,
 			resp,
 			pageRef,
 			CaptureLevel.META
 		);
+	}
+
+	/**
+	 * Finds the news view.
+	 *
+	 * @throws ServletException when cannot find the news view
+	 */
+	private static View findNewsView(SemanticCMS semanticCMS) throws ServletException {
 		// Find the news view, which this RSS extends and iteroperates with
-		View view;
-		{
-			view = semanticCMS.getViewsByName().get(NewsView.VIEW_NAME);
-			if(view == null) throw new ServletException("View not found: " + NewsView.VIEW_NAME);
-		}
+		View view = semanticCMS.getViewsByName().get(NewsView.VIEW_NAME);
+		if(view == null) throw new ServletException("View not found: " + NewsView.VIEW_NAME);
+		return view;
+	}
+
+	/**
+	 * Finds the news, returns {@code null} when not able to find the news.
+	 * Limits the number of news entries per book "maxItems" settings.
+	 */
+	private static List<News> findNews(
+		ServletContext servletContext,
+		HttpServletRequest req,
+		HttpServletResponse resp,
+		Page page
+	) throws ServletException, IOException {
+		Book book = page.getPageRef().getBook();
+		Map<String,String> bookParams = book.getParam();
 		// Find the news
 		int maxItems;
 		{
@@ -205,9 +240,65 @@ public class RssServlet extends HttpServlet {
 			}
 		}
 		List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page);
-		int numItems = allNews.size();
-		if(numItems > maxItems) numItems = maxItems;
-		resp.reset();
+		if(allNews.size() > maxItems) allNews = allNews.subList(0, maxItems);
+		return allNews;
+	}
+
+	@Override
+	protected long getLastModified(HttpServletRequest req) {
+		try {
+			HttpServletResponse resp = (HttpServletResponse)req.getAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE);
+			ServletContext servletContext = getServletContext();
+			SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
+			// Used several places below
+			Page page = findPage(servletContext, req, resp, semanticCMS);
+			if(page == null) {
+				return -1;
+			}
+			List<News> rssNews = findNews(
+				servletContext,
+				req,
+				resp,
+				page
+			);
+			if(rssNews == null || rssNews.isEmpty()) {
+				return -1;
+			}
+			return rssNews.get(0).getPubDate().getMillis();
+		} catch(ServletException e) {
+			log("getLastModified failed", e);
+			return -1;
+		} catch(IOException e) {
+			log("getLastModified failed", e);
+			return -1;
+		}
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ServletContext servletContext = getServletContext();
+		SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
+		// Used several places below
+		Page page = findPage(servletContext, req, resp, semanticCMS);
+		if(page == null) {
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+		PageRef pageRef = page.getPageRef();
+		Book book = page.getPageRef().getBook();
+		Map<String,String> bookParams = book.getParam();
+		View view = findNewsView(semanticCMS);
+		List<News> rssNews = findNews(
+			servletContext,
+			req,
+			resp,
+			page
+		);
+		if(rssNews == null) {
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+		resp.resetBuffer();
 		resp.setContentType(RssUtils.CONTENT_TYPE);
 		resp.setCharacterEncoding(ENCODING);
 		PrintWriter out = resp.getWriter();
@@ -245,9 +336,9 @@ public class RssServlet extends HttpServlet {
 		writeChannelParamElement(bookParams, "webMaster", out);
 		DateFormat rfc822 = new SimpleDateFormat(RFC_822_FORMAT);
 		// lastBuildDate is the most recent of the news items listed, which will have been sorted to the top of the news
-		if(numItems > 0) {
+		if(!rssNews.isEmpty()) {
 			out.print("        <lastBuildDate>");
-			encodeTextInXhtml(rfc822.format(allNews.get(0).getPubDate().toDate()), out);
+			encodeTextInXhtml(rfc822.format(rssNews.get(0).getPubDate().toDate()), out);
 			out.println("</lastBuildDate>");
 		}
 		out.print("        <generator>");
@@ -306,8 +397,7 @@ public class RssServlet extends HttpServlet {
 		// textInput not supported
 		// skipHours not supported
 		// skipDays not supported
-		for(int i=0; i<numItems; i++) {
-			News news = allNews.get(i);
+		for(News news : rssNews) {
 			out.println("        <item>");
 			out.print("            <title>");
 			encodeTextInXhtml(news.getTitle(), out);

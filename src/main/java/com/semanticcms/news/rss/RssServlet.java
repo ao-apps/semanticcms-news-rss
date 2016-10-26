@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,13 @@ public class RssServlet extends HttpServlet {
 	private static final String GENERATOR = RssServlet.class.getName() + " 1.0";
 
 	private static final String DOCS = "https://cyber.harvard.edu/rss/rss.html";
+
+	/**
+	 * See <a href="http://stackoverflow.com/questions/15247742/rfc-822-date-time-format-in-rss-2-0-feeds-cet-not-accepted">
+	 * http://stackoverflow.com/questions/15247742/rfc-822-date-time-format-in-rss-2-0-feeds-cet-not-accepted
+	 * </a>
+	 */
+	private static final String RFC_822_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
 	/**
 	 * The default max items to include.
@@ -170,6 +178,7 @@ public class RssServlet extends HttpServlet {
 				pagePath.substring(book.getPathPrefix().length())
 			);
 		}
+		Map<String,String> bookParams = book.getParam();
 		// Try to capture the page
 		Page page = CapturePage.capturePage(
 			servletContext,
@@ -184,6 +193,20 @@ public class RssServlet extends HttpServlet {
 			view = semanticCMS.getViewsByName().get(NewsView.VIEW_NAME);
 			if(view == null) throw new ServletException("View not found: " + NewsView.VIEW_NAME);
 		}
+		// Find the news
+		int maxItems;
+		{
+			String maxItemsVal = getBookParam(bookParams, CHANNEL_PARAM_PREFIX + "maxItems");
+			if(maxItemsVal != null) {
+				maxItems = Integer.parseInt(maxItemsVal);
+				if(maxItems < 1) throw new ServletException("RSS maxItems may not be less than one: " + maxItems);
+			} else {
+				maxItems = DEFAULT_MAX_ITEMS;
+			}
+		}
+		List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page);
+		int numItems = allNews.size();
+		if(numItems > maxItems) numItems = maxItems;
 		resp.reset();
 		resp.setContentType(RssUtils.CONTENT_TYPE);
 		resp.setCharacterEncoding(ENCODING);
@@ -218,9 +241,15 @@ public class RssServlet extends HttpServlet {
 			encodeTextInXhtml(copyright.toString(), out);
 			out.println("</copyright>");
 		}
-		Map<String,String> bookParams = book.getParam();
 		writeChannelParamElement(bookParams, "managingEditor", out);
 		writeChannelParamElement(bookParams, "webMaster", out);
+		DateFormat rfc822 = new SimpleDateFormat(RFC_822_FORMAT);
+		// lastBuildDate is the most recent of the news items listed, which will have been sorted to the top of the news
+		if(numItems > 0) {
+			out.print("        <lastBuildDate>");
+			encodeTextInXhtml(rfc822.format(allNews.get(0).getPubDate().toDate()), out);
+			out.println("</lastBuildDate>");
+		}
 		out.print("        <generator>");
 		encodeTextInXhtml(GENERATOR, out);
 		out.println("</generator>");
@@ -277,19 +306,6 @@ public class RssServlet extends HttpServlet {
 		// textInput not supported
 		// skipHours not supported
 		// skipDays not supported
-		int maxItems;
-		{
-			String maxItemsVal = getBookParam(bookParams, CHANNEL_PARAM_PREFIX + "maxItems");
-			if(maxItemsVal != null) {
-				maxItems = Integer.parseInt(maxItemsVal);
-				if(maxItems < 1) throw new ServletException("RSS maxItems may not be less than one: " + maxItems);
-			} else {
-				maxItems = DEFAULT_MAX_ITEMS;
-			}
-		}
-		List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page);
-		int numItems = allNews.size();
-		if(numItems > maxItems) numItems = maxItems;
 		for(int i=0; i<numItems; i++) {
 			News news = allNews.get(i);
 			out.println("        <item>");
@@ -368,8 +384,7 @@ public class RssServlet extends HttpServlet {
 			);
 			out.println("</guid>");
 			out.print("            <pubDate>");
-			// http://stackoverflow.com/questions/15247742/rfc-822-date-time-format-in-rss-2-0-feeds-cet-not-accepted
-			encodeTextInXhtml(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z").format(news.getPubDate().toDate()), out);
+			encodeTextInXhtml(rfc822.format(news.getPubDate().toDate()), out);
 			out.println("</pubDate>");
 			// source if from a different page
 			if(!page.equals(newsPage)) {

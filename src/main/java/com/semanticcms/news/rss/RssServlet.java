@@ -65,6 +65,9 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * https://cyber.harvard.edu/rss/rss.html
  * http://webdesign.about.com/od/rss/a/link_rss_feed.htm
+ *
+ * TODO: Generate or convert all relative paths to absolute paths to be in strict compliance with RSS.
+ *       Then test on Android gReader app which does not currently handle relative paths.
  */
 @WebServlet("*" + RssUtils.EXTENSION)
 public class RssServlet extends HttpServlet {

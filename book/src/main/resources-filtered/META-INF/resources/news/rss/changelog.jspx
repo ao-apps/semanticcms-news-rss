@@ -36,7 +36,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-31T00:31:16-0500"
-		dateModified="2017-03-22T21:40:11-0500"
+		dateModified="2017-03-30T15:07:31-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-news-rss:pom.version}" />
@@ -53,7 +53,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 				scmUrl="@{documented.scm.url}"
 			>
 				<ul>
-					<li>New release for bug fixes in underlying <core:link book="/ao-encoding" page="/index.jspx" /> library.</li>
+					<li>New release for bug fixes in underlying <ao:a href="https://aoindustries.com/ao-encoding/">AO Encoding</ao:a> library.</li>
 				</ul>
 			</changelog:release>
 		</c:if>

@@ -316,13 +316,16 @@ public class RssServlet extends HttpServlet {
 		out.println("</title>");
 		String channelLink;
 		{
-			String servletPath = pageRef.getServletPath();
+			StringBuilder servletPath =
+				new StringBuilder(bookRef.getPrefix())
+				.append(pageRef.getPath())
+			;
 			if(!view.isDefault()) {
-				servletPath += "?view=" + URLEncoder.encode(view.getName(), ENCODING);
+				servletPath.append("?view=").append(URLEncoder.encode(view.getName(), ENCODING));
 			}
 			channelLink = ServletUtil.getAbsoluteURL(
 				req,
-				resp.encodeURL(servletPath)
+				resp.encodeURL(servletPath.toString())
 			);
 		}
 		out.print("        <link>");
@@ -418,7 +421,10 @@ public class RssServlet extends HttpServlet {
 				news.getBook(),
 				news.getTargetPage()
 			);
-			StringBuilder targetServletPath = new StringBuilder(targetPageRef.getServletPath());
+			StringBuilder targetServletPath =
+				new StringBuilder(targetPageRef.getBookRef().getPrefix())
+				.append(targetPageRef.getPath())
+			;
 			if(!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
 				targetServletPath.append("?view=").append(URLEncoder.encode(news.getView(), ENCODING));
 			}
@@ -470,8 +476,10 @@ public class RssServlet extends HttpServlet {
 			// author possible here, but Author does not currently have email address
 			out.print("            <guid>");
 			Page newsPage = news.getPage();
+			PageRef newsPageRef = newsPage.getPageRef();
 			String guidServletPath =
-				newsPage.getPageRef().getServletPath()
+				newsPageRef.getBookRef().getPrefix()
+				+ newsPageRef.getPath()
 				+ '#'
 				+ news.getId()
 			;

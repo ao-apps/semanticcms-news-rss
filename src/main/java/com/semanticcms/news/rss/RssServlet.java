@@ -1,6 +1,6 @@
 /*
  * semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -28,12 +28,13 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.ServletContextCache;
 import com.aoindustries.servlet.http.ServletUtil;
-import com.semanticcms.core.model.Book;
+import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.Copyright;
 import com.semanticcms.core.model.Element;
 import com.semanticcms.core.model.NodeBodyWriter;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.repository.Book;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
 import com.semanticcms.core.servlet.PageRefResolver;
@@ -84,6 +85,7 @@ public class RssServlet extends HttpServlet {
 
 	/**
 	 * TODO: Maven process source to put version into this string.
+	 * TODO: Do this via Maven.properties file.
 	 */
 	private static final String GENERATOR = RssServlet.class.getName() + " 1.0";
 
@@ -186,15 +188,16 @@ public class RssServlet extends HttpServlet {
 			return null;
 		}
 		// Find book and path
-		Book book = semanticCMS.getBook(pagePath);
 		PageRef pageRef;
 		{
-			if(book == null) {
+			Book book = semanticCMS.getPublishedBook(pagePath);
+			if(book == null || !book.isAccessible()) {
 				return null;
 			}
+			BookRef bookRef = book.getBookRef();
 			pageRef = new PageRef(
-				book,
-				pagePath.substring(book.getPathPrefix().length())
+				bookRef,
+				pagePath.substring(bookRef.getPrefix().length())
 			);
 		}
 		// Capture the page
@@ -227,9 +230,10 @@ public class RssServlet extends HttpServlet {
 		ServletContext servletContext,
 		HttpServletRequest req,
 		HttpServletResponse resp,
+		SemanticCMS semanticCMS,
 		Page page
 	) throws ServletException, IOException {
-		Book book = page.getPageRef().getBook();
+		Book book = semanticCMS.getBook(page.getPageRef().getBookRef());
 		Map<String,String> bookParams = book.getParam();
 		// Find the news
 		int maxItems;
@@ -262,6 +266,7 @@ public class RssServlet extends HttpServlet {
 				servletContext,
 				req,
 				resp,
+				semanticCMS,
 				page
 			);
 			if(rssNews == null || rssNews.isEmpty()) {
@@ -288,13 +293,16 @@ public class RssServlet extends HttpServlet {
 			return;
 		}
 		PageRef pageRef = page.getPageRef();
-		Book book = page.getPageRef().getBook();
+		BookRef bookRef = page.getPageRef().getBookRef();
+		Book book = semanticCMS.getBook(bookRef);
+		assert book.isAccessible();
 		Map<String,String> bookParams = book.getParam();
 		View view = findNewsView(semanticCMS);
 		List<News> rssNews = findNews(
 			servletContext,
 			req,
 			resp,
+			semanticCMS,
 			page
 		);
 		if(rssNews == null) {
@@ -362,7 +370,7 @@ public class RssServlet extends HttpServlet {
 				out.print("            <url>");
 				ServletUtil.getAbsoluteURL(
 					req,
-					resp.encodeURL(book.getPathPrefix() + imageUrl),
+					resp.encodeURL(bookRef.getPrefix() + imageUrl),
 					textInXhtmlEncoder,
 					out
 				);
@@ -406,9 +414,11 @@ public class RssServlet extends HttpServlet {
 			encodeTextInXhtml(news.getTitle(), out);
 			out.println("</title>");
 			out.print("            <link>");
+			// TODO: Multi-domain support
 			PageRef targetPageRef = PageRefResolver.getPageRef(
 				servletContext,
 				req,
+				news.getDomain(),
 				news.getBook(),
 				news.getTargetPage()
 			);

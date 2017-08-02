@@ -83,12 +83,6 @@ public class RssServlet extends HttpServlet {
 
 	private static final String IMAGE_PARAM_PREFIX = CHANNEL_PARAM_PREFIX + "image.";
 
-	/**
-	 * TODO: Maven process source to put version into this string.
-	 * TODO: Do this via Maven.properties file.
-	 */
-	private static final String GENERATOR = RssServlet.class.getName() + " 1.0";
-
 	private static final String DOCS = "https://cyber.harvard.edu/rss/rss.html";
 
 	/**
@@ -353,7 +347,9 @@ public class RssServlet extends HttpServlet {
 			out.println("</lastBuildDate>");
 		}
 		out.print("        <generator>");
-		encodeTextInXhtml(GENERATOR, out);
+		encodeTextInXhtml(RssServlet.class.getName(), out);
+		out.print(' ');
+		encodeTextInXhtml(Maven.properties.getProperty("project.version"), out);
 		out.println("</generator>");
 		out.print("        <docs>");
 		encodeTextInXhtml(DOCS, out);

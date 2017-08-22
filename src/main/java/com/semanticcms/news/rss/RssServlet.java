@@ -26,16 +26,18 @@ import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.net.Path;
 import com.aoindustries.servlet.ServletContextCache;
 import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.Copyright;
 import com.semanticcms.core.model.Element;
 import com.semanticcms.core.model.NodeBodyWriter;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
-import com.semanticcms.core.pages.Book;
-import com.semanticcms.core.servlet.CaptureLevel;
+import com.semanticcms.core.pages.CaptureLevel;
+import com.semanticcms.core.servlet.Book;
 import com.semanticcms.core.servlet.CapturePage;
 import com.semanticcms.core.servlet.PageRefResolver;
 import com.semanticcms.core.servlet.SemanticCMS;
@@ -189,10 +191,14 @@ public class RssServlet extends HttpServlet {
 				return null;
 			}
 			BookRef bookRef = book.getBookRef();
-			pageRef = new PageRef(
-				bookRef,
-				pagePath.substring(bookRef.getPrefix().length())
-			);
+			try {
+				pageRef = new PageRef(
+					bookRef,
+					Path.valueOf(pagePath.substring(bookRef.getPrefix().length()))
+				);
+			} catch(ValidationException e) {
+				return null;
+			}
 		}
 		// Capture the page
 		return CapturePage.capturePage(

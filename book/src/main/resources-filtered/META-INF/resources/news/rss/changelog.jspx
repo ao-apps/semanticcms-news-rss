@@ -54,7 +54,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 				scmUrl="@{documented.scm.url}"
 			>
 				<ul>
-					<li>Updated for <core:link book="/" page="/index.jspx" /> 2 compatibility.</li>
+					<li>Updated for <core:link book="/" page="/" /> 2 compatibility.</li>
 					<li>Now including current project version in RSS generator via Maven filters.</li>
 				</ul>
 			</changlog:release>
@@ -86,7 +86,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 				<li>New <ao:a href="https://aoindustries.com/ao-oss-parent/">AO OSS Parent</ao:a> POM to simplify <code>pom.xml</code> files.</li>
 				<li>Added lastBuildDate as the pubDate of the top news item.</li>
 				<li>Implemented getLastModified in servlets corresponding to resource last modified.</li>
-				<li>Project documentation moved to per-project book in <core:link book="/" page="/index.jspx" /> format.</li>
+				<li>Project documentation moved to per-project book in <core:link book="/" page="/" /> format.</li>
 				<li>Added changelog as top-level project link.</li>
 			</ul>
 		</changelog:release>

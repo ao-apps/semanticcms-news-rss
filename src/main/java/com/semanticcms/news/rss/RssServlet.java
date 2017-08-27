@@ -30,19 +30,21 @@ import com.aoindustries.net.Path;
 import com.aoindustries.servlet.ServletContextCache;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.aoindustries.validation.ValidationException;
+import com.semanticcms.core.controller.Book;
+import com.semanticcms.core.controller.CapturePage;
+import com.semanticcms.core.controller.PageRefResolver;
+import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.BookRef;
 import com.semanticcms.core.model.Copyright;
 import com.semanticcms.core.model.Element;
+import com.semanticcms.core.model.Link;
 import com.semanticcms.core.model.NodeBodyWriter;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.pages.CaptureLevel;
-import com.semanticcms.core.servlet.Book;
-import com.semanticcms.core.servlet.CapturePage;
-import com.semanticcms.core.servlet.PageRefResolver;
-import com.semanticcms.core.servlet.SemanticCMS;
+import com.semanticcms.core.renderer.html.HtmlRenderer;
+import com.semanticcms.core.renderer.html.View;
 import com.semanticcms.core.servlet.ServletElementContext;
-import com.semanticcms.core.servlet.View;
 import com.semanticcms.news.model.News;
 import com.semanticcms.news.servlet.NewsUtils;
 import com.semanticcms.news.servlet.RssUtils;
@@ -65,12 +67,15 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Automated RSS feeds for each page, if it or any of it's
  * child pages have any news.
- * 
- * https://cyber.harvard.edu/rss/rss.html
- * http://webdesign.about.com/od/rss/a/link_rss_feed.htm
+ * <ul>
+ *   <li><a href="https://cyber.harvard.edu/rss/rss.html">https://cyber.harvard.edu/rss/rss.html</a></li>
+ *   <li><a href="http://webdesign.about.com/od/rss/a/link_rss_feed.htm">http://webdesign.about.com/od/rss/a/link_rss_feed.htm</a></li>
+ * </ul>
  *
  * TODO: Generate or convert all relative paths to absolute paths to be in strict compliance with RSS.
  *       Then test on Android gReader app which does not currently handle relative paths.
+ *
+ * TODO: Implement as a *.rss Renderer
  */
 @WebServlet("*" + RssUtils.EXTENSION)
 public class RssServlet extends HttpServlet {
@@ -215,9 +220,9 @@ public class RssServlet extends HttpServlet {
 	 *
 	 * @throws ServletException when cannot find the news view
 	 */
-	private static View findNewsView(SemanticCMS semanticCMS) throws ServletException {
+	private static View findNewsView(HtmlRenderer htmlRenderer) throws ServletException {
 		// Find the news view, which this RSS extends and iteroperates with
-		View view = semanticCMS.getViewsByName().get(NewsView.VIEW_NAME);
+		View view = htmlRenderer.getViewsByName().get(NewsView.VIEW_NAME);
 		if(view == null) throw new ServletException("View not found: " + NewsView.VIEW_NAME);
 		return view;
 	}
@@ -297,7 +302,8 @@ public class RssServlet extends HttpServlet {
 		Book book = semanticCMS.getBook(bookRef);
 		assert book.isAccessible();
 		Map<String,String> bookParams = book.getParam();
-		View view = findNewsView(semanticCMS);
+		HtmlRenderer htmlRenderer = HtmlRenderer.getInstance(servletContext);
+		View view = findNewsView(htmlRenderer);
 		List<News> rssNews = findNews(
 			servletContext,
 			req,
@@ -431,7 +437,7 @@ public class RssServlet extends HttpServlet {
 				new StringBuilder(targetPageRef.getBookRef().getPrefix())
 				.append(targetPageRef.getPath())
 			;
-			if(!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
+			if(!news.getView().equals(Link.DEFAULT_VIEW_NAME)) {
 				targetServletPath.append("?view=").append(URLEncoder.encode(news.getView(), ENCODING));
 			}
 			if(news.getElement() != null) {

@@ -1,6 +1,6 @@
 /*
  * semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -62,10 +62,11 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Automated RSS feeds for each page, if it or any of it's
  * child pages have any news.
+ * <ul>
+ *   <li><a href="https://cyber.harvard.edu/rss/rss.html">https://cyber.harvard.edu/rss/rss.html</a></li>
+ *   <li><a href="http://webdesign.about.com/od/rss/a/link_rss_feed.htm">http://webdesign.about.com/od/rss/a/link_rss_feed.htm</a></li>
+ * </ul>
  * 
- * https://cyber.harvard.edu/rss/rss.html
- * http://webdesign.about.com/od/rss/a/link_rss_feed.htm
- *
  * TODO: Generate or convert all relative paths to absolute paths to be in strict compliance with RSS.
  *       Then test on Android gReader app which does not currently handle relative paths.
  */
@@ -81,11 +82,6 @@ public class RssServlet extends HttpServlet {
 	private static final String CHANNEL_PARAM_PREFIX = RSS_PARAM_PREFIX + "channel.";
 
 	private static final String IMAGE_PARAM_PREFIX = CHANNEL_PARAM_PREFIX + "image.";
-
-	/**
-	 * TODO: Maven process source to put version into this string.
-	 */
-	private static final String GENERATOR = RssServlet.class.getName() + " 1.0";
 
 	private static final String DOCS = "https://cyber.harvard.edu/rss/rss.html";
 
@@ -345,7 +341,9 @@ public class RssServlet extends HttpServlet {
 			out.println("</lastBuildDate>");
 		}
 		out.print("        <generator>");
-		encodeTextInXhtml(GENERATOR, out);
+		encodeTextInXhtml(RssServlet.class.getName(), out);
+		out.print(' ');
+		encodeTextInXhtml(Maven.properties.getProperty("project.version"), out);
 		out.println("</generator>");
 		out.print("        <docs>");
 		encodeTextInXhtml(DOCS, out);

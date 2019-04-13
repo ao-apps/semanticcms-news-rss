@@ -87,31 +87,31 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.9.9</version>
+			<groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.10.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.aoindustries</groupId><artifactId>ao-encoding</artifactId><version>1.6.0</version>
+			<groupId>com.aoindustries</groupId><artifactId>ao-encoding</artifactId><version>1.7.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.aoindustries</groupId><artifactId>ao-io-buffer</artifactId><version>2.0.3</version>
+			<groupId>com.aoindustries</groupId><artifactId>ao-io-buffer</artifactId><version>3.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.aoindustries</groupId><artifactId>aocode-public</artifactId><version>1.9.0</version>
+			<groupId>com.aoindustries</groupId><artifactId>aocode-public</artifactId><version>1.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-model</artifactId><version>1.8.2</version>
+			<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-model</artifactId><version>1.8.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId><version>1.11.0</version>
+			<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId><version>1.12.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-model</artifactId><version>1.1.3</version>
+			<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-model</artifactId><version>1.1.4-validation-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-servlet</artifactId><version>1.1.3</version>
+			<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-servlet</artifactId><version>1.1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-view</artifactId><version>1.1.3</version>
+			<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-view</artifactId><version>1.1.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

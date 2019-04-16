@@ -40,7 +40,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<description.html><![CDATA[RSS feeds for <a target="_top" href="https://semanticcms.com/news/">SemanticCMS newsfeeds</a>.]]></description.html>
 	</properties>
 
-	<name>SemanticCMS 1 News RSS</name>
+	<name>SemanticCMS News RSS</name>
 	<url>https://semanticcms.com/news/rss/</url>
 	<description>RSS feeds for SemanticCMS newsfeeds.</description>
 	<inceptionYear>2016</inceptionYear>

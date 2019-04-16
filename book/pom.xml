@@ -37,7 +37,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<documented.groupId>com.semanticcms</documented.groupId><documented.artifactId>semanticcms-news-rss</documented.artifactId>
 		<documented.javaVersion>1.7</documented.javaVersion>
 		<documented.javac.link.javaApi>${javac.link.javaApi.jdk7}</documented.javac.link.javaApi>
-		<documented.name>SemanticCMS 1 News RSS</documented.name>
+		<documented.name>SemanticCMS News RSS</documented.name>
 		<documented.shortTitle>RSS</documented.shortTitle>
 		<documented.url>https://semanticcms.com/news/rss/</documented.url>
 		<documented.description>RSS feeds for SemanticCMS newsfeeds.</documented.description>

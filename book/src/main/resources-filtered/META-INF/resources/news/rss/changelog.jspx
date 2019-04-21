@@ -37,7 +37,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-31T00:31:16-0500"
-		dateModified="2017-08-02T14:36:44-0500"
+		dateModified="2019-04-21T00:03:46-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-news-rss:pom.version}" />
@@ -54,6 +54,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 				scmUrl="@{documented.scm.url}"
 			>
 				<ul>
+					<li>Minimum Java version changed from 1.6 to 1.7.</li>
 					<li>Now including current project version in RSS generator via Maven filters.</li>
 				</ul>
 			</changelog:release>

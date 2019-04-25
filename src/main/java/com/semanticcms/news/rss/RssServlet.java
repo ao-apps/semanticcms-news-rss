@@ -1,6 +1,6 @@
 /*
  * semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
- * Copyright (C) 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -278,10 +278,7 @@ public class RssServlet extends HttpServlet {
 				return -1;
 			}
 			return rssNews.get(0).getPubDate().getMillis();
-		} catch(ServletException e) {
-			log("getLastModified failed", e);
-			return -1;
-		} catch(IOException e) {
+		} catch(ServletException | IOException e) {
 			log("getLastModified failed", e);
 			return -1;
 		}

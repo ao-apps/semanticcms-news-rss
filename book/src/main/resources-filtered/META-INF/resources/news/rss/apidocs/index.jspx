@@ -39,5 +39,4 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		datePublished="2016-10-19T14:30:00-0500"
 		dateModified="${ao:getLastModified('index.html')}"
 	/>
-	<!-- TODO: Pick-up javadocs version, not pom version, in title, here and elsewhere -->
 </jsp:root>

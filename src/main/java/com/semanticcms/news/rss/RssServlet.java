@@ -28,7 +28,9 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.Path;
 import com.aoindustries.servlet.ServletContextCache;
-import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.servlet.URIComponent;
+import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
@@ -52,7 +54,8 @@ import com.semanticcms.news.view.NewsView;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
-import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -82,7 +85,7 @@ public class RssServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String ENCODING = "UTF-8";
+	private static final Charset ENCODING = StandardCharsets.UTF_8;
 
 	private static final String RSS_PARAM_PREFIX = "rss.";
 
@@ -314,7 +317,7 @@ public class RssServlet extends HttpServlet {
 		}
 		resp.resetBuffer();
 		resp.setContentType(RssUtils.CONTENT_TYPE);
-		resp.setCharacterEncoding(ENCODING);
+		resp.setCharacterEncoding(ENCODING.name());
 		PrintWriter out = resp.getWriter();
 		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
 		out.println("<rss version=\"2.0\">");
@@ -330,11 +333,12 @@ public class RssServlet extends HttpServlet {
 				.append(pageRef.getPath())
 			;
 			if(!view.isDefault()) {
-				servletPath.append("?view=").append(URLEncoder.encode(view.getName(), ENCODING));
+				servletPath.append("?view=");
+				URIComponent.QUERY.encode(view.getName(), resp, servletPath);
 			}
-			channelLink = ServletUtil.getAbsoluteURL(
+			channelLink = HttpServletUtil.getAbsoluteURL( // TODO: getAbsoluteURL go through UrlUtils.encodeURI( or other way around?  Be consistent on all projects.
 				req,
-				resp.encodeURL(servletPath.toString())
+				resp.encodeURL(ServletUtil.encodeURI(servletPath.toString(), resp))
 			);
 		}
 		out.print("        <link>");
@@ -376,9 +380,9 @@ public class RssServlet extends HttpServlet {
 			if(imageUrl != null) {
 				out.println("        <image>");
 				out.print("            <url>");
-				ServletUtil.getAbsoluteURL(
+				HttpServletUtil.getAbsoluteURL(
 					req,
-					resp.encodeURL(bookRef.getPrefix() + imageUrl),
+					resp.encodeURL(ServletUtil.encodeURI(bookRef.getPrefix() + imageUrl, resp)),
 					textInXhtmlEncoder,
 					out
 				);
@@ -432,17 +436,18 @@ public class RssServlet extends HttpServlet {
 			);
 			StringBuilder targetServletPath =
 				new StringBuilder(targetPageRef.getBookRef().getPrefix())
-				.append(targetPageRef.getPath())
-			;
+				.append(targetPageRef.getPath());
 			if(!news.getView().equals(Link.DEFAULT_VIEW_NAME)) {
-				targetServletPath.append("?view=").append(URLEncoder.encode(news.getView(), ENCODING));
+				targetServletPath.append("?view=");
+				URIComponent.QUERY.encode(news.getView(), resp, targetServletPath);
 			}
 			if(news.getElement() != null) {
-				targetServletPath.append('#').append(news.getElement());
+				targetServletPath.append('#');
+				URIComponent.FRAGMENT.encode(news.getElement(), resp, targetServletPath);
 			}
-			ServletUtil.getAbsoluteURL(
+			HttpServletUtil.getAbsoluteURL(
 				req,
-				resp.encodeURL(targetServletPath.toString()),
+				resp.encodeURL(ServletUtil.encodeURI(targetServletPath.toString(), resp)),
 				textInXhtmlEncoder,
 				out
 			);
@@ -490,11 +495,11 @@ public class RssServlet extends HttpServlet {
 				newsPageRef.getBookRef().getPrefix()
 				+ newsPageRef.getPath()
 				+ '#'
-				+ news.getId()
+				+ URIComponent.FRAGMENT.encode(news.getId(), resp)
 			;
-			ServletUtil.getAbsoluteURL(
+			HttpServletUtil.getAbsoluteURL(
 				req,
-				resp.encodeURL(guidServletPath),
+				resp.encodeURL(ServletUtil.encodeURI(guidServletPath, resp)),
 				textInXhtmlEncoder,
 				out
 			);
@@ -505,9 +510,9 @@ public class RssServlet extends HttpServlet {
 			// source if from a different page
 			if(!page.equals(newsPage)) {
 				out.print("            <source url=\"");
-				ServletUtil.getAbsoluteURL(
+				HttpServletUtil.getAbsoluteURL(
 					req,
-					resp.encodeURL(RssUtils.getRssServletPath(newsPage)),
+					resp.encodeURL(ServletUtil.encodeURI(RssUtils.getRssServletPath(newsPage), resp)),
 					textInXhtmlAttributeEncoder,
 					out
 				);

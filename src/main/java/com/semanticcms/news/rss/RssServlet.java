@@ -26,9 +26,8 @@ import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.ServletContextCache;
-import com.aoindustries.servlet.ServletUtil;
-import com.aoindustries.servlet.URIComponent;
 import com.aoindustries.servlet.http.HttpServletUtil;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.Copyright;
@@ -312,11 +311,11 @@ public class RssServlet extends HttpServlet {
 		{
 			String servletPath = pageRef.getServletPath();
 			if(!view.isDefault()) {
-				servletPath += "?view=" + URIComponent.QUERY.encode(view.getName(), resp);
+				servletPath += "?view=" + URIEncoder.encodeURIComponent(view.getName());
 			}
 			channelLink = HttpServletUtil.getAbsoluteURL( // TODO: getAbsoluteURL go through UrlUtils.encodeURI( or other way around?  Be consistent on all projects.
 				req,
-				resp.encodeURL(ServletUtil.encodeURI(servletPath, resp))
+				resp.encodeURL(URIEncoder.encodeURI(servletPath))
 			);
 		}
 		out.print("        <link>");
@@ -360,7 +359,7 @@ public class RssServlet extends HttpServlet {
 				out.print("            <url>");
 				HttpServletUtil.getAbsoluteURL(
 					req,
-					resp.encodeURL(ServletUtil.encodeURI(book.getPathPrefix() + imageUrl, resp)),
+					resp.encodeURL(URIEncoder.encodeURI(book.getPathPrefix() + imageUrl)),
 					textInXhtmlEncoder,
 					out
 				);
@@ -413,15 +412,15 @@ public class RssServlet extends HttpServlet {
 			StringBuilder targetServletPath = new StringBuilder(targetPageRef.getServletPath());
 			if(!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
 				targetServletPath.append("?view=");
-				URIComponent.QUERY.encode(news.getView(), resp, targetServletPath);
+				URIEncoder.encodeURIComponent(news.getView(), targetServletPath);
 			}
 			if(news.getElement() != null) {
 				targetServletPath.append('#');
-				URIComponent.FRAGMENT.encode(news.getElement(), resp, targetServletPath);
+				URIEncoder.encodeURIComponent(news.getElement(), targetServletPath);
 			}
 			HttpServletUtil.getAbsoluteURL(
 				req,
-				resp.encodeURL(ServletUtil.encodeURI(targetServletPath.toString(), resp)),
+				resp.encodeURL(URIEncoder.encodeURI(targetServletPath.toString())),
 				textInXhtmlEncoder,
 				out
 			);
@@ -467,11 +466,11 @@ public class RssServlet extends HttpServlet {
 			String guidServletPath =
 				newsPage.getPageRef().getServletPath()
 				+ '#'
-				+ URIComponent.FRAGMENT.encode(news.getId(), resp)
+				+ URIEncoder.encodeURIComponent(news.getId())
 			;
 			HttpServletUtil.getAbsoluteURL(
 				req,
-				resp.encodeURL(ServletUtil.encodeURI(guidServletPath, resp)),
+				resp.encodeURL(URIEncoder.encodeURI(guidServletPath)),
 				textInXhtmlEncoder,
 				out
 			);
@@ -484,7 +483,7 @@ public class RssServlet extends HttpServlet {
 				out.print("            <source url=\"");
 				HttpServletUtil.getAbsoluteURL(
 					req,
-					resp.encodeURL(ServletUtil.encodeURI(RssUtils.getRssServletPath(newsPage), resp)),
+					resp.encodeURL(URIEncoder.encodeURI(RssUtils.getRssServletPath(newsPage))),
 					textInXhtmlAttributeEncoder,
 					out
 				);

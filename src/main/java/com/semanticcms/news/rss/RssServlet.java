@@ -29,7 +29,6 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.Path;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.ServletContextCache;
-import com.aoindustries.servlet.ServletUtil;
 import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.controller.Book;

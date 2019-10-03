@@ -335,9 +335,15 @@ public class RssServlet extends HttpServlet {
 				servletPath.append("?view=");
 				URIEncoder.encodeURIComponent(view.getName(), servletPath);
 			}
-			channelLink = HttpServletUtil.getAbsoluteURL( // TODO: getAbsoluteURL go through UrlUtils.encodeURI( or other way around?  Be consistent on all projects.
-				req,
-				resp.encodeURL(URIEncoder.encodeURI(servletPath.toString()))
+			channelLink = URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+				resp.encodeURL(
+					HttpServletUtil.getAbsoluteURL(
+						req,
+						URIEncoder.encodeURI(
+							servletPath.toString()
+						)
+					)
+				)
 			);
 		}
 		out.print("        <link>");
@@ -379,11 +385,17 @@ public class RssServlet extends HttpServlet {
 			if(imageUrl != null) {
 				out.println("        <image>");
 				out.print("            <url>");
-				HttpServletUtil.getAbsoluteURL(
-					req,
-					resp.encodeURL(URIEncoder.encodeURI(bookRef.getPrefix() + imageUrl)),
-					textInXhtmlEncoder,
-					out
+				URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+					resp.encodeURL(
+						HttpServletUtil.getAbsoluteURL(
+							req,
+							URIEncoder.encodeURI(
+								bookRef.getPrefix() + imageUrl
+							)
+						)
+					),
+					out,
+					textInXhtmlEncoder
 				);
 				out.println("</url>");
 				out.print("            <title>");
@@ -444,11 +456,17 @@ public class RssServlet extends HttpServlet {
 				targetServletPath.append('#');
 				URIEncoder.encodeURIComponent(news.getElement(), targetServletPath);
 			}
-			HttpServletUtil.getAbsoluteURL(
-				req,
-				resp.encodeURL(URIEncoder.encodeURI(targetServletPath.toString())),
-				textInXhtmlEncoder,
-				out
+			URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+				resp.encodeURL(
+					HttpServletUtil.getAbsoluteURL(
+						req,
+						URIEncoder.encodeURI(
+							targetServletPath.toString()
+						)
+					)
+				),
+				out,
+				textInXhtmlEncoder
 			);
 			out.println("</link>");
 			// TODO: Prefer body over description?
@@ -496,11 +514,17 @@ public class RssServlet extends HttpServlet {
 				+ '#'
 				+ URIEncoder.encodeURIComponent(news.getId())
 			;
-			HttpServletUtil.getAbsoluteURL(
-				req,
-				resp.encodeURL(URIEncoder.encodeURI(guidServletPath)),
-				textInXhtmlEncoder,
-				out
+			URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+				resp.encodeURL(
+					HttpServletUtil.getAbsoluteURL(
+						req,
+						URIEncoder.encodeURI(
+							guidServletPath
+						)
+					)
+				),
+				out,
+				textInXhtmlEncoder
 			);
 			out.println("</guid>");
 			out.print("            <pubDate>");
@@ -509,11 +533,17 @@ public class RssServlet extends HttpServlet {
 			// source if from a different page
 			if(!page.equals(newsPage)) {
 				out.print("            <source url=\"");
-				HttpServletUtil.getAbsoluteURL(
-					req,
-					resp.encodeURL(URIEncoder.encodeURI(RssUtils.getRssServletPath(newsPage))),
-					textInXhtmlAttributeEncoder,
-					out
+				URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+					resp.encodeURL(
+						HttpServletUtil.getAbsoluteURL(
+							req,
+							URIEncoder.encodeURI(
+								RssUtils.getRssServletPath(newsPage)
+							)
+						)
+					),
+					out,
+					textInXhtmlAttributeEncoder
 				);
 				out.print("\">");
 				encodeTextInXhtml(view.getTitle(servletContext, req, resp, newsPage), out);

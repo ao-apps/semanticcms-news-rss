@@ -307,19 +307,20 @@ public class RssServlet extends HttpServlet {
 		out.print("        <title>");
 		encodeTextInXhtml(channelTitle, out);
 		out.println("</title>");
+		StringBuilder sb = new StringBuilder();
 		String channelLink;
 		{
-			String servletPath = pageRef.getServletPath();
+			sb.setLength(0);
+			URIEncoder.encodeURI(pageRef.getServletPath(), sb);
 			if(!view.isDefault()) {
-				servletPath += "?view=" + URIEncoder.encodeURIComponent(view.getName());
+				sb.append("?view=");
+				URIEncoder.encodeURIComponent(view.getName(), sb);
 			}
 			channelLink = URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
 				resp.encodeURL(
 					HttpServletUtil.getAbsoluteURL(
 						req,
-						URIEncoder.encodeURI(
-							servletPath
-						)
+						sb.toString()
 					)
 				)
 			);
@@ -421,22 +422,25 @@ public class RssServlet extends HttpServlet {
 				news.getBook(),
 				news.getTargetPage()
 			);
-			StringBuilder targetServletPath = new StringBuilder(targetPageRef.getServletPath());
-			if(!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
-				targetServletPath.append("?view=");
-				URIEncoder.encodeURIComponent(news.getView(), targetServletPath);
-			}
-			if(news.getElement() != null) {
-				targetServletPath.append('#');
-				URIEncoder.encodeURIComponent(news.getElement(), targetServletPath);
+			String targetServletPath;
+			{
+				sb.setLength(0);
+				URIEncoder.encodeURI(targetPageRef.getServletPath(), sb);
+				if(!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
+					sb.append("?view=");
+					URIEncoder.encodeURIComponent(news.getView(), sb);
+				}
+				if(news.getElement() != null) {
+					sb.append('#');
+					URIEncoder.encodeURIComponent(news.getElement(), sb);
+				}
+				targetServletPath = sb.toString();
 			}
 			URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
 				resp.encodeURL(
 					HttpServletUtil.getAbsoluteURL(
 						req,
-						URIEncoder.encodeURI(
-							targetServletPath.toString()
-						)
+						targetServletPath
 					)
 				),
 				textInXhtmlEncoder,
@@ -447,10 +451,10 @@ public class RssServlet extends HttpServlet {
 			String description = news.getDescription();
 			if(description != null) {
 				// Since description in RSS 2.0 allows HTML, and this is a text-only description, this has to be doubly encoded
-				StringBuilder encoded = new StringBuilder(description.length() * 5/4); // Allow roughly 25% increase before growing stringbuilder
-				encodeTextInXhtml(description, encoded);
+				sb.setLength(0);
+				encodeTextInXhtml(description, sb);
 				out.print("            <description>");
-				encodeTextInXhtml(encoded, out);
+				encodeTextInXhtml(sb, out);
 				out.println("</description>");
 			} else {
 				// Capture news now in "body" mode, since findAllNews only did meta for fast search
@@ -481,18 +485,19 @@ public class RssServlet extends HttpServlet {
 			// author possible here, but Author does not currently have email address
 			out.print("            <guid>");
 			Page newsPage = news.getPage();
-			String guidServletPath =
-				newsPage.getPageRef().getServletPath()
-				+ '#'
-				+ URIEncoder.encodeURIComponent(news.getId())
-			;
+			String guidServletPath;
+			{
+				sb.setLength(0);
+				URIEncoder.encodeURI(newsPage.getPageRef().getServletPath(), sb);
+				sb.append('#');
+				URIEncoder.encodeURIComponent(news.getId(), sb);
+				guidServletPath = sb.toString();
+			}
 			URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
 				resp.encodeURL(
 					HttpServletUtil.getAbsoluteURL(
 						req,
-						URIEncoder.encodeURI(
-							guidServletPath
-						)
+						guidServletPath
 					)
 				),
 				textInXhtmlEncoder,

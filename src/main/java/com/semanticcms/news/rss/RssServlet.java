@@ -372,8 +372,8 @@ public class RssServlet extends HttpServlet {
 							)
 						)
 					),
-					out,
-					textInXhtmlEncoder
+					textInXhtmlEncoder,
+					out
 				);
 				out.println("</url>");
 				out.print("            <title>");
@@ -439,8 +439,8 @@ public class RssServlet extends HttpServlet {
 						)
 					)
 				),
-				out,
-				textInXhtmlEncoder
+				textInXhtmlEncoder,
+				out
 			);
 			out.println("</link>");
 			// TODO: Prefer body over description?
@@ -495,8 +495,8 @@ public class RssServlet extends HttpServlet {
 						)
 					)
 				),
-				out,
-				textInXhtmlEncoder
+				textInXhtmlEncoder,
+				out
 			);
 			out.println("</guid>");
 			out.print("            <pubDate>");
@@ -514,8 +514,8 @@ public class RssServlet extends HttpServlet {
 							)
 						)
 					),
-					out,
-					textInXhtmlAttributeEncoder
+					textInXhtmlAttributeEncoder,
+					out
 				);
 				out.print("\">");
 				encodeTextInXhtml(view.getTitle(servletContext, req, resp, newsPage), out);

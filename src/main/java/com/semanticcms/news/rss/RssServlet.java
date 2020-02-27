@@ -1,6 +1,6 @@
 /*
  * semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
- * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -224,8 +224,8 @@ public class RssServlet extends HttpServlet {
 	 */
 	private static View findNewsView(HtmlRenderer htmlRenderer) throws ServletException {
 		// Find the news view, which this RSS extends and iteroperates with
-		View view = htmlRenderer.getViewsByName().get(NewsView.VIEW_NAME);
-		if(view == null) throw new ServletException("View not found: " + NewsView.VIEW_NAME);
+		View view = htmlRenderer.getViewsByName().get(NewsView.NAME);
+		if(view == null) throw new ServletException("View not found: " + NewsView.NAME);
 		return view;
 	}
 

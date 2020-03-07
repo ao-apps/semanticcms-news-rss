@@ -35,8 +35,6 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 	<properties>
 		<!-- These values are copied from the project being documented -->
 		<documented.artifactId>semanticcms-news-rss</documented.artifactId>
-		<documented.javaVersion>1.8</documented.javaVersion>
-		<documented.javac.link.javaApi>${javac.link.javaApi.jdk8}</documented.javac.link.javaApi>
 		<documented.name>SemanticCMS News RSS</documented.name>
 		<documented.shortTitle>RSS</documented.shortTitle>
 		<documented.description>RSS feeds for SemanticCMS newsfeeds.</documented.description>

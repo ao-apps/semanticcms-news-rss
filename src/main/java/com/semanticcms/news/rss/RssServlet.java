@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Automated RSS feeds for each page, if it or any of it's
+ * Automated RSS feeds for each page, if it or any of its
  * child pages have any news.
  * <ul>
  *   <li><a href="https://cyber.harvard.edu/rss/rss.html">https://cyber.harvard.edu/rss/rss.html</a></li>

@@ -22,6 +22,7 @@
  */
 package com.semanticcms.news.rss;
 
+import com.aoindustries.encoding.EncodingContext;
 import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
@@ -471,7 +472,7 @@ public class RssServlet extends HttpServlet {
 				if(recaptured.getBody().getLength() > 0) {
 					// TODO: Automatic absolute links on body content of news tags, resetting on capturing other pages, or do we just trust RSS to correctly do relative links?
 					out.print("            <description>");
-					MediaWriter encoder = new MediaWriter(textInXhtmlEncoder, out);
+					MediaWriter encoder = new MediaWriter(EncodingContext.XML, textInXhtmlEncoder, out);
 					recaptured.getBody().writeTo(
 						new NodeBodyWriter(
 							recaptured,

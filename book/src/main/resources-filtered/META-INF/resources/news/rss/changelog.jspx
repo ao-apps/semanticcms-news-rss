@@ -59,6 +59,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 						Reduced use of property substitutions in <code>pom.xml</code>.
 						This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
 					</li>
+					<li>Changed default number of items from 20 to 50.</li>
 					<li>Updated dependencies.</li>
 				</ul>
 			</changelog:release>

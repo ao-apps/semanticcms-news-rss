@@ -56,6 +56,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 				<ul>
 					<li>Updated for <core:link book="/" page="/" /> 2 compatibility.</li>
 					<li>Minimum Java version changed from 1.7 to 1.8.</li>
+					<li>Changed default number of items from 20 to 50.</li>
 				</ul>
 			</changelog:release>
 		</c:if>

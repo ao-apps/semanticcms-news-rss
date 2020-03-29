@@ -105,7 +105,7 @@ public class RssServlet extends HttpServlet {
 	/**
 	 * The default max items to include.
 	 */
-	private static final int DEFAULT_MAX_ITEMS = 20;
+	private static final int DEFAULT_MAX_ITEMS = 50;
 
 	/**
 	 * Gets a book parameter, null if empty.

@@ -27,6 +27,7 @@ import com.aoindustries.encoding.MediaWriter;
 import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.io.buffer.BufferResult;
 import com.aoindustries.net.Path;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.ServletContextCache;
@@ -125,7 +126,7 @@ public class RssServlet extends HttpServlet {
 			encodeTextInXhtml(value, out);
 			out.print("</");
 			out.print(elementName);
-			out.println('>');
+			out.print(">\n");
 		}
 	}
 
@@ -319,13 +320,13 @@ public class RssServlet extends HttpServlet {
 		resp.setContentType(RssUtils.CONTENT_TYPE);
 		resp.setCharacterEncoding(ENCODING.name());
 		PrintWriter out = resp.getWriter();
-		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
-		out.println("<rss version=\"2.0\">");
-		out.println("    <channel>");
+		out.print("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>\n"
+			+ "<rss version=\"2.0\">\n"
+			+ "    <channel>\n");
 		String channelTitle = view.getTitle(servletContext, req, resp, page);
 		out.print("        <title>");
 		encodeTextInXhtml(channelTitle, out);
-		out.println("</title>");
+		out.print("</title>\n");
 		StringBuilder sb = new StringBuilder();
 		String channelLink;
 		{
@@ -347,15 +348,15 @@ public class RssServlet extends HttpServlet {
 		}
 		out.print("        <link>");
 		encodeTextInXhtml(channelLink, out);
-		out.println("</link>");
-		out.print("        <description>");
+		out.print("</link>\n"
+			+ "        <description>");
 		encodeTextInXhtml(view.getDescription(page), out);
-		out.println("</description>");
+		out.print("</description>\n");
 		Copyright copyright = view.getCopyright(servletContext, req, resp, page);
 		if(copyright != null && !copyright.isEmpty()) {
 			out.print("        <copyright>");
 			encodeTextInXhtml(copyright.toString(), out);
-			out.println("</copyright>");
+			out.print("</copyright>\n");
 		}
 		writeChannelParamElement(bookParams, "managingEditor", out);
 		writeChannelParamElement(bookParams, "webMaster", out);
@@ -364,16 +365,16 @@ public class RssServlet extends HttpServlet {
 		if(!rssNews.isEmpty()) {
 			out.print("        <lastBuildDate>");
 			encodeTextInXhtml(rfc822.format(rssNews.get(0).getPubDate().toDate()), out);
-			out.println("</lastBuildDate>");
+			out.print("</lastBuildDate>\n");
 		}
 		out.print("        <generator>");
 		encodeTextInXhtml(RssServlet.class.getName(), out);
 		out.print(' ');
 		encodeTextInXhtml(Maven.properties.getProperty("project.version"), out);
-		out.println("</generator>");
-		out.print("        <docs>");
+		out.print("</generator>\n"
+			+ "        <docs>");
 		encodeTextInXhtml(DOCS, out);
-		out.println("</docs>");
+		out.print("</docs>\n");
 		writeChannelParamElement(bookParams, "ttl", out);
 		// image
 		{
@@ -382,8 +383,8 @@ public class RssServlet extends HttpServlet {
 			String imageHeight = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "height");
 			String imageDescription = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "description");
 			if(imageUrl != null) {
-				out.println("        <image>");
-				out.print("            <url>");
+				out.print("        <image>\n"
+					+ "            <url>");
 				URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
 					resp.encodeURL(
 						HttpServletUtil.getAbsoluteURL(
@@ -396,29 +397,29 @@ public class RssServlet extends HttpServlet {
 					textInXhtmlEncoder,
 					out
 				);
-				out.println("</url>");
-				out.print("            <title>");
+				out.print("</url>\n"
+					+ "            <title>");
 				encodeTextInXhtml(channelTitle, out);
-				out.println("</title>");
-				out.print("            <link>");
+				out.print("</title>\n"
+					+ "            <link>");
 				encodeTextInXhtml(channelLink, out);
-				out.println("</link>");
+				out.print("</link>\n");
 				if(imageWidth != null) {
 					out.print("            <width>");
 					encodeTextInXhtml(imageWidth, out);
-					out.println("</width>");
+					out.print("</width>\n");
 				}
 				if(imageHeight != null) {
 					out.print("            <height>");
 					encodeTextInXhtml(imageHeight, out);
-					out.println("</height>");
+					out.print("</height>\n");
 				}
 				if(imageDescription != null) {
 					out.print("            <description>");
 					encodeTextInXhtml(imageDescription, out);
-					out.println("</description>");
+					out.print("</description>\n");
 				}
-				out.println("        </image>");
+				out.print("        </image>\n");
 			} else {
 				// Others must not be provided
 				if(imageWidth != null) throw new ServletException("RSS image width without url");
@@ -431,11 +432,11 @@ public class RssServlet extends HttpServlet {
 		// skipHours not supported
 		// skipDays not supported
 		for(News news : rssNews) {
-			out.println("        <item>");
-			out.print("            <title>");
+			out.print("        <item>\n"
+				+ "            <title>");
 			encodeTextInXhtml(news.getTitle(), out);
-			out.println("</title>");
-			out.print("            <link>");
+			out.print("</title>\n"
+				+ "            <link>");
 			// TODO: Multi-domain support
 			PageRef targetPageRef = PageRefResolver.getPageRef(
 				servletContext,
@@ -469,46 +470,49 @@ public class RssServlet extends HttpServlet {
 				textInXhtmlEncoder,
 				out
 			);
-			out.println("</link>");
-			// TODO: Prefer body over description?
+			out.print("</link>\n");
+
 			String description = news.getDescription();
-			if(description != null) {
+
+			// Capture news now in "body" mode, since findAllNews only did meta for fast search
+			// TODO: body: Is there a way to capture news at "body" level while other parts at "meta" level?
+			//       This recapturing is clunky and full body capture of all would be inefficient.
+			// TODO: Concurrency: Is limited concurrent capture possible here?
+			//       If concurrency at 16, for example, could we reasonably dispatch concurrent capturePageInBook
+			//       while serializing to write on the main thread?
+			String newsId = news.getId();
+			Page newsPage = news.getPage();
+			PageRef newsPageRef = newsPage.getPageRef();
+			Element recaptured = CapturePage.capturePage(servletContext, req, resp, newsPageRef, CaptureLevel.BODY).getElementsById().get(newsId);
+			if(recaptured == null) throw new ServletException("recaptured failed: pageRef = " + newsPageRef + ", newsId = " + newsId);
+			if(!(recaptured instanceof News)) throw new ServletException("recaptured is not news: " + recaptured.getClass().getName());
+			BufferResult body = recaptured.getBody();
+			long bodyLen = body.getLength();
+
+			if(description != null || bodyLen > 0) {
+				out.print("            <description>\n");
 				// Since description in RSS 2.0 allows HTML, and this is a text-only description, this has to be doubly encoded
-				sb.setLength(0);
-				encodeTextInXhtml(description, sb);
-				out.print("            <description>");
-				encodeTextInXhtml(sb, out);
-				out.println("</description>");
-			} else {
-				// Capture news now in "body" mode, since findAllNews only did meta for fast search
-				// TODO: body: Is there a way to capture news at "body" level while other parts at "meta" level?
-				//       This recapturing is clunky and full body capture of all would be inefficient.
-				// TODO: Concurrency: Is limited concurrent capture possible here?
-				//       If concurrency at 16, for example, could we reasonably dispatch concurrent capturePageInBook
-				//       while serializing to write on the main thread?
-				String newsId = news.getId();
-				PageRef newsPageRef = news.getPage().getPageRef();
-				Element recaptured = CapturePage.capturePage(servletContext, req, resp, newsPageRef, CaptureLevel.BODY).getElementsById().get(newsId);
-				if(recaptured == null) throw new ServletException("recaptured failed: pageRef = " + newsPageRef + ", newsId = " + newsId);
-				if(!(recaptured instanceof News)) throw new ServletException("recaptured is not news: " + recaptured.getClass().getName());
-				if(recaptured.getBody().getLength() > 0) {
+				MediaWriter encoder = new MediaWriter(EncodingContext.XML, textInXhtmlEncoder, out);
+				if(description != null) {
+					encoder.append("                <div><em>").text(description).append("</em></div>\n");
+				}
+				if(bodyLen > 0) {
+					encoder.append("                <div style=\"margin-top: 1em\">\n");
 					// TODO: Automatic absolute links on body content of news tags, resetting on capturing other pages, or do we just trust RSS to correctly do relative links?
-					out.print("            <description>");
-					MediaWriter encoder = new MediaWriter(EncodingContext.XML, textInXhtmlEncoder, out);
-					recaptured.getBody().writeTo(
+					// TODO: Register a LinkRenderer that forces absolute links
+					body.writeTo(
 						new NodeBodyWriter(
 							recaptured,
 							encoder,
 							new ServletElementContext(servletContext, req, resp)
 						)
 					);
-					out.println("</description>");
+					encoder.append("                </div>\n");
 				}
+				out.print("            </description>\n");
 			}
 			// author possible here, but Author does not currently have email address
 			out.print("            <guid>");
-			Page newsPage = news.getPage();
-			PageRef newsPageRef = newsPage.getPageRef();
 			String guidServletPath;
 			{
 				sb.setLength(0);
@@ -528,10 +532,10 @@ public class RssServlet extends HttpServlet {
 				textInXhtmlEncoder,
 				out
 			);
-			out.println("</guid>");
-			out.print("            <pubDate>");
+			out.print("</guid>\n"
+				+ "            <pubDate>");
 			encodeTextInXhtml(rfc822.format(news.getPubDate().toDate()), out);
-			out.println("</pubDate>");
+			out.print("</pubDate>\n");
 			// source if from a different page
 			if(!page.equals(newsPage)) {
 				out.print("            <source url=\"");
@@ -549,11 +553,11 @@ public class RssServlet extends HttpServlet {
 				);
 				out.print("\">");
 				encodeTextInXhtml(view.getTitle(servletContext, req, resp, newsPage), out);
-				out.println("</source>");
+				out.print("</source>\n");
 			}
-			out.println("        </item>");
+			out.print("        </item>\n");
 		}
-		out.println("    </channel>");
-		out.println("</rss>");
+		out.print("    </channel>\n"
+			+ "</rss>\n");
 	}
 }

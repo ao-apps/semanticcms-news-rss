@@ -29,7 +29,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<relativePath>../../../parent/pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-rss-book</artifactId><version>1.5.0</version>
+	<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-rss-book</artifactId><version>1.5.0-POST-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -51,7 +51,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<connection>scm:git:git://github.com/aoindustries/semanticcms-news-rss.git</connection>
 		<developerConnection>scm:git:git@github.com:aoindustries/semanticcms-news-rss.git</developerConnection>
 		<url>https://github.com/aoindustries/semanticcms-news-rss</url>
-		<tag>semanticcms-news-rss-book-1.5.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>

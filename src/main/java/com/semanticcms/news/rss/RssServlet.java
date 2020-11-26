@@ -454,9 +454,10 @@ public class RssServlet extends HttpServlet {
 					sb.append("?view=");
 					URIEncoder.encodeURIComponent(news.getView(), sb);
 				}
-				if(news.getElement() != null) {
+				String element = news.getElement();
+				if(element != null) {
 					sb.append('#');
-					URIEncoder.encodeURIComponent(news.getElement(), sb);
+					URIEncoder.encodeURIComponent(element, sb);
 				}
 				targetServletPath = sb.toString();
 			}

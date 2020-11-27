@@ -325,6 +325,10 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 				<groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.11</version>
 			</dependency>
 			<dependency>
+				<groupId>joda-time</groupId><artifactId>joda-time-jsptags</artifactId><version>1.1.1</version>
+			</dependency>
+			<!-- javaee-web-api-bom: <groupId>javax.servlet</groupId><artifactId>jstl</artifactId> -->
+			<dependency>
 				<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-pages-local</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
@@ -337,8 +341,22 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 				<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-resources</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
 			<dependency>
+				<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-taglib</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<dependency>
 				<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-renderer-html</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
+			<dependency>
+				<groupId>com.semanticcms</groupId><artifactId>semanticcms-news-taglib</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<dependency>
+				<groupId>com.semanticcms</groupId><artifactId>semanticcms-section-model</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<dependency>
+				<groupId>com.semanticcms</groupId><artifactId>semanticcms-section-renderer-html</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+			</dependency>
+			<!-- Runtime Transitive -->
+			<!-- javaee-web-api-bom: <groupId>org.glassfish.web</groupId><artifactId>jstl-impl</artifactId> -->
 			<!-- BOM -->
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>javaee-web-api-bom</artifactId><version>6.0.1${POST-SNAPSHOT}</version>

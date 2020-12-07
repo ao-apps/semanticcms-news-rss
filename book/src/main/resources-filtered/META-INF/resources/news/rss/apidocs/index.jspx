@@ -35,7 +35,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<ao:forward page="index.html" />
 	</c:if>
 	<core:page
-		title="@{documented.name} @{com.semanticcms:semanticcms-news-rss:pom.version} API Docs"
+		title="@{documented.name} ${ao:getProjectVersion('./', 'com.semanticcms', 'semanticcms-news-rss', '¿@{project.version}?')} API Docs"
 		shortTitle="API Docs"
 		datePublished="2016-10-19T14:30:00-0500"
 		dateModified="${ao:getLastModified('index.html')}"

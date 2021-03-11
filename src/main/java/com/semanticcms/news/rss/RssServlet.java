@@ -1,6 +1,6 @@
 /*
  * semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
- * Copyright (C) 2016, 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -104,13 +104,13 @@ public class RssServlet extends HttpServlet {
 	/**
 	 * Gets a book parameter, null if empty.
 	 */
-	private static String getBookParam(Map<String,String> bookParams, String paramName) {
+	private static String getBookParam(Map<String, String> bookParams, String paramName) {
 		String value = bookParams.get(paramName);
 		if(value != null && value.isEmpty()) value = null;
 		return value;
 	}
 
-	private static void writeChannelParamElement(Map<String,String> bookParams, String elementName, PrintWriter out) throws IOException {
+	private static void writeChannelParamElement(Map<String, String> bookParams, String elementName, PrintWriter out) throws IOException {
 		String value = getBookParam(bookParams, CHANNEL_PARAM_PREFIX + elementName);
 		if(value != null) {
 			out.print("        <");
@@ -230,7 +230,7 @@ public class RssServlet extends HttpServlet {
 		Page page
 	) throws ServletException, IOException {
 		Book book = page.getPageRef().getBook();
-		Map<String,String> bookParams = book.getParam();
+		Map<String, String> bookParams = book.getParam();
 		// Find the news
 		int maxItems;
 		{
@@ -286,7 +286,7 @@ public class RssServlet extends HttpServlet {
 		}
 		PageRef pageRef = page.getPageRef();
 		Book book = page.getPageRef().getBook();
-		Map<String,String> bookParams = book.getParam();
+		Map<String, String> bookParams = book.getParam();
 		View view = findNewsView(semanticCMS);
 		List<News> rssNews = findNews(
 			servletContext,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
-Copyright (C) 2016, 2017, 2019, 2020  AO Industries, Inc.
+Copyright (C) 2016, 2017, 2019, 2020, 2021  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -36,8 +36,8 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		title="@{documented.name} Changelog"
 		shortTitle="Changelog"
 		tocLevels="1"
-		datePublished="2016-10-31T00:31:16-0500"
-		dateModified="2020-06-30T10:42:26-05:00"
+		datePublished="2016-10-31T00:31:16-05:00"
+		dateModified="2021-05-22T13:07:02-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -46,7 +46,11 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{project.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{project.scm.url}"
-			/>
+			>
+				<ul>
+					<li>Updated to <ao:a rel="nofollow" href="https://www.oracle.com/java/technologies/javaee/javaeetechnologies.html#javaee7">Java™ EE 7 Web Profile</ao:a> (Servlet 3.1, JSP 2.3, EL 3.0, and JSTL 1.2).</li>
+				</ul>
+			</changelog:release>
 		</c:if>
 
 		<changelog:release
@@ -84,7 +88,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.3.0"
-			datePublished="2019-10-12T01:56:08-0500"
+			datePublished="2019-10-12T01:56:08-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -97,7 +101,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.2.1"
-			datePublished="2019-06-22T07:53:30-0500"
+			datePublished="2019-06-22T07:53:30-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -115,7 +119,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.2.0"
-			datePublished="2019-04-21T01:30:34-0500"
+			datePublished="2019-04-21T01:30:34-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -129,7 +133,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.1.3"
-			datePublished="2017-07-20T16:36:47-0500"
+			datePublished="2017-07-20T16:36:47-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -143,7 +147,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.1.2"
-			datePublished="2016-11-16T05:40:24-0600"
+			datePublished="2016-11-16T05:40:24-06:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -160,7 +164,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.1.1"
-			datePublished="2016-10-20T19:22:00-0500"
+			datePublished="2016-10-20T19:22:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -175,7 +179,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.1.0"
-			datePublished="2016-10-04T22:48:00-0500"
+			datePublished="2016-10-04T22:48:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -193,7 +197,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<changelog:release
 			projectName="@{documented.name}"
 			version="1.0"
-			datePublished="2016-09-11T16:50:00-0500"
+			datePublished="2016-09-11T16:50:00-05:00"
 			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
 			scmUrl="@{project.scm.url}"

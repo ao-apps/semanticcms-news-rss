@@ -22,15 +22,15 @@
  */
 package com.semanticcms.news.rss;
 
-import com.aoindustries.encoding.EncodingContext;
-import com.aoindustries.encoding.MediaWriter;
-import static com.aoindustries.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
-import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
-import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.io.buffer.BufferResult;
-import com.aoindustries.net.URIEncoder;
-import com.aoindustries.servlet.ServletContextCache;
-import com.aoindustries.servlet.http.HttpServletUtil;
+import com.aoapps.encoding.EncodingContext;
+import com.aoapps.encoding.MediaWriter;
+import static com.aoapps.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
+import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
+import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoapps.io.buffer.BufferResult;
+import com.aoapps.net.URIEncoder;
+import com.aoapps.servlet.ServletContextCache;
+import com.aoapps.servlet.http.HttpServletUtil;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.Copyright;
 import com.semanticcms.core.model.Element;

@@ -28,7 +28,9 @@ import static com.aoapps.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttribu
 import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoapps.io.buffer.BufferResult;
+import com.aoapps.lang.attribute.Attribute;
 import com.aoapps.net.URIEncoder;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.ServletContextCache;
 import com.aoapps.servlet.http.HttpServletUtil;
 import com.semanticcms.core.model.Book;
@@ -70,7 +72,7 @@ import javax.servlet.http.HttpServletResponse;
  *   <li><a href="https://cyber.harvard.edu/rss/rss.html">https://cyber.harvard.edu/rss/rss.html</a></li>
  *   <li><a href="http://webdesign.about.com/od/rss/a/link_rss_feed.htm">http://webdesign.about.com/od/rss/a/link_rss_feed.htm</a></li>
  * </ul>
- * 
+ *
  * TODO: Generate or convert all relative paths to absolute paths to be in strict compliance with RSS.
  *       Then test on Android gReader app which does not currently handle relative paths.
  */
@@ -127,16 +129,13 @@ public class RssServlet extends HttpServlet {
 	 * The response is not given to getLastModified, but we need it for captures to get
 	 * the last modified.
 	 */
-	private static final String RESPONSE_IN_REQUEST_ATTRIBUTE = RssServlet.class.getName() + ".responseInRequest";
+	private static final ScopeEE.Request.Attribute<HttpServletResponse> RESPONSE_IN_REQUEST_ATTRIBUTE =
+		ScopeEE.REQUEST.attribute(RssServlet.class.getName() + ".responseInRequest");
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Object old = req.getAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE);
-		try {
-			req.setAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE, resp);
+		try (Attribute.OldValue old = RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).init(resp)) {
 			super.service(req, resp);
-		} finally {
-			req.setAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE, old);
 		}
 	}
 
@@ -250,7 +249,7 @@ public class RssServlet extends HttpServlet {
 	@Override
 	protected long getLastModified(HttpServletRequest req) {
 		try {
-			HttpServletResponse resp = (HttpServletResponse)req.getAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE);
+			HttpServletResponse resp = RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).get();
 			ServletContext servletContext = getServletContext();
 			SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
 			// Used several places below

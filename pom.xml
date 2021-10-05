@@ -40,7 +40,7 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 		<description.html><![CDATA[RSS feeds for <a target="${javadoc.target}" href="https://semanticcms.com/news/">SemanticCMS newsfeeds</a>.]]></description.html>
 		<!-- SonarQube -->
 		<sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
-		<sonar.organization>aoindustries</sonar.organization>
+		<sonar.organization>ao-apps</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!-- TODO: Implement tests -->
 		<sonar.coverage.exclusions>**.*</sonar.coverage.exclusions>
@@ -75,20 +75,20 @@ along with semanticcms-news-rss.  If not, see <http://www.gnu.org/licenses />.
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/aoindustries/semanticcms-news-rss.git</connection>
-		<developerConnection>scm:git:git@github.com:aoindustries/semanticcms-news-rss.git</developerConnection>
-		<url>https://github.com/aoindustries/semanticcms-news-rss</url>
+		<connection>scm:git:git://github.com/ao-apps/semanticcms-news-rss.git</connection>
+		<developerConnection>scm:git:git@github.com:ao-apps/semanticcms-news-rss.git</developerConnection>
+		<url>https://github.com/ao-apps/semanticcms-news-rss</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/aoindustries/semanticcms-news-rss/issues</url>
+		<url>https://github.com/ao-apps/semanticcms-news-rss/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>GitHub Actions</system>
-		<url>https://github.com/aoindustries/semanticcms-news-rss/actions</url>
+		<url>https://github.com/ao-apps/semanticcms-news-rss/actions</url>
 	</ciManagement>
 
 	<repositories>

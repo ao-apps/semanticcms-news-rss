@@ -1,6 +1,6 @@
 /*
  * semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
- * Copyright (C) 2016, 2017, 2019, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -88,7 +88,7 @@ public class RssServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Charset ENCODING = StandardCharsets.UTF_8;
+	private static final Charset ENCODING = EncodingContext.XML.getCharacterEncoding();
 
 	private static final String RSS_PARAM_PREFIX = "rss.";
 

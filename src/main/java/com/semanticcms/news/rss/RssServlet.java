@@ -23,10 +23,11 @@
 package com.semanticcms.news.rss;
 
 import com.aoapps.encoding.EncodingContext;
-import com.aoapps.encoding.MediaWriter;
 import static com.aoapps.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoapps.encoding.TextWriter;
+import com.aoapps.encoding.XhtmlWriter;
 import com.aoapps.io.buffer.BufferResult;
 import com.aoapps.lang.attribute.Attribute;
 import com.aoapps.lang.validation.ValidationException;
@@ -58,7 +59,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -492,22 +492,24 @@ public class RssServlet extends HttpServlet {
 			if(description != null || bodyLen > 0) {
 				out.print("            <description>\n");
 				// Since description in RSS 2.0 allows HTML, and this is a text-only description, this has to be doubly encoded
-				MediaWriter encoder = new MediaWriter(EncodingContext.XML, textInXhtmlEncoder, out);
-				if(description != null) {
-					encoder.append("                <div><em>").text(description).append("</em></div>\n");
-				}
-				if(bodyLen > 0) {
-					encoder.append("                <div style=\"margin-top: 1em\">\n");
-					// TODO: Automatic absolute links on body content of news tags, resetting on capturing other pages, or do we just trust RSS to correctly do relative links?
-					// TODO: Register a LinkRenderer that forces absolute links
-					body.writeTo(
-						new NodeBodyWriter(
-							recaptured,
-							encoder,
-							new ServletElementContext(servletContext, req, resp)
-						)
-					);
-					encoder.append("                </div>\n");
+				// TODO: Verify this xhtml() actually does double-encoding and is not optimized away
+				try (XhtmlWriter encoder = new TextWriter(EncodingContext.XML, textInXhtmlEncoder, out).xhtml()) {
+					if(description != null) {
+						encoder.append("                <div><em>").text(description).append("</em></div>\n");
+					}
+					if(bodyLen > 0) {
+						encoder.append("                <div style=\"margin-top: 1em\">\n");
+						// TODO: Automatic absolute links on body content of news tags, resetting on capturing other pages, or do we just trust RSS to correctly do relative links?
+						// TODO: Register a LinkRenderer that forces absolute links
+						body.writeTo(
+							new NodeBodyWriter(
+								recaptured,
+								encoder,
+								new ServletElementContext(servletContext, req, resp)
+							)
+						);
+						encoder.append("                </div>\n");
+					}
 				}
 				out.print("            </description>\n");
 			}

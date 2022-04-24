@@ -133,7 +133,7 @@ public class RssServlet extends HttpServlet {
    * the last modified.
    */
   private static final ScopeEE.Request.Attribute<HttpServletResponse> RESPONSE_IN_REQUEST_ATTRIBUTE =
-    ScopeEE.REQUEST.attribute(RssServlet.class.getName() + ".responseInRequest");
+      ScopeEE.REQUEST.attribute(RssServlet.class.getName() + ".responseInRequest");
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -146,10 +146,10 @@ public class RssServlet extends HttpServlet {
    * Finds the page, returns {@code null} when not able to find the page.
    */
   private static Page findPage(
-    ServletContext servletContext,
-    HttpServletRequest req,
-    HttpServletResponse resp,
-    SemanticCMS semanticCMS
+      ServletContext servletContext,
+      HttpServletRequest req,
+      HttpServletResponse resp,
+      SemanticCMS semanticCMS
   ) throws ServletException, IOException {
     // Path extra info not allowed
     if (req.getPathInfo() != null) {
@@ -174,8 +174,8 @@ public class RssServlet extends HttpServlet {
       pagePath = basePath + extension;
       try {
         if (
-          !RssUtils.isProtectedExtension(pagePath)
-          && ServletContextCache.getResource(servletContext, pagePath) != null
+            !RssUtils.isProtectedExtension(pagePath)
+                && ServletContextCache.getResource(servletContext, pagePath) != null
         ) {
           break;
         }
@@ -195,17 +195,17 @@ public class RssServlet extends HttpServlet {
         return null;
       }
       pageRef = new PageRef(
-        book,
-        pagePath.substring(book.getPathPrefix().length())
+          book,
+          pagePath.substring(book.getPathPrefix().length())
       );
     }
     // Capture the page
     return CapturePage.capturePage(
-      servletContext,
-      req,
-      resp,
-      pageRef,
-      CaptureLevel.META
+        servletContext,
+        req,
+        resp,
+        pageRef,
+        CaptureLevel.META
     );
   }
 
@@ -228,10 +228,10 @@ public class RssServlet extends HttpServlet {
    * Limits the number of news entries per book "maxItems" settings.
    */
   private static List<News> findNews(
-    ServletContext servletContext,
-    HttpServletRequest req,
-    HttpServletResponse resp,
-    Page page
+      ServletContext servletContext,
+      HttpServletRequest req,
+      HttpServletResponse resp,
+      Page page
   ) throws ServletException, IOException {
     Book book = page.getPageRef().getBook();
     Map<String, String> bookParams = book.getParam();
@@ -267,10 +267,10 @@ public class RssServlet extends HttpServlet {
         return -1;
       }
       List<News> rssNews = findNews(
-        servletContext,
-        req,
-        resp,
-        page
+          servletContext,
+          req,
+          resp,
+          page
       );
       if (rssNews == null || rssNews.isEmpty()) {
         return -1;
@@ -297,10 +297,10 @@ public class RssServlet extends HttpServlet {
     Map<String, String> bookParams = book.getParam();
     View view = findNewsView(semanticCMS);
     List<News> rssNews = findNews(
-      servletContext,
-      req,
-      resp,
-      page
+        servletContext,
+        req,
+        resp,
+        page
     );
     if (rssNews == null) {
       resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -311,8 +311,8 @@ public class RssServlet extends HttpServlet {
     resp.setCharacterEncoding(ENCODING.name());
     PrintWriter out = resp.getWriter();
     out.print("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>\n"
-      + "<rss version=\"2.0\">\n"
-      + "    <channel>\n");
+        + "<rss version=\"2.0\">\n"
+        + "    <channel>\n");
     String channelTitle = view.getTitle(servletContext, req, resp, page);
     out.print("        <title>");
     encodeTextInXhtml(channelTitle, out);
@@ -327,18 +327,18 @@ public class RssServlet extends HttpServlet {
         URIEncoder.encodeURIComponent(view.getName(), sb);
       }
       channelLink = URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-        resp.encodeURL(
-          HttpServletUtil.getAbsoluteURL(
-            req,
-            sb.toString()
+          resp.encodeURL(
+              HttpServletUtil.getAbsoluteURL(
+                  req,
+                  sb.toString()
+              )
           )
-        )
       );
     }
     out.print("        <link>");
     encodeTextInXhtml(channelLink, out);
     out.print("</link>\n"
-      + "        <description>");
+        + "        <description>");
     encodeTextInXhtml(view.getDescription(page), out);
     out.print("</description>\n");
     Copyright copyright = view.getCopyright(servletContext, req, resp, page);
@@ -361,7 +361,7 @@ public class RssServlet extends HttpServlet {
     out.print(' ');
     encodeTextInXhtml(Maven.properties.getProperty("project.version"), out);
     out.print("</generator>\n"
-      + "        <docs>");
+        + "        <docs>");
     encodeTextInXhtml(DOCS, out);
     out.print("</docs>\n");
     writeChannelParamElement(bookParams, "ttl", out);
@@ -373,24 +373,24 @@ public class RssServlet extends HttpServlet {
       String imageDescription = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "description");
       if (imageUrl != null) {
         out.print("        <image>\n"
-          + "            <url>");
+            + "            <url>");
         URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-          resp.encodeURL(
-            HttpServletUtil.getAbsoluteURL(
-              req,
-              URIEncoder.encodeURI(
-                book.getPathPrefix() + imageUrl
-              )
-            )
-          ),
-          textInXhtmlEncoder,
-          out
+            resp.encodeURL(
+                HttpServletUtil.getAbsoluteURL(
+                    req,
+                    URIEncoder.encodeURI(
+                        book.getPathPrefix() + imageUrl
+                    )
+                )
+            ),
+            textInXhtmlEncoder,
+            out
         );
         out.print("</url>\n"
-          + "            <title>");
+            + "            <title>");
         encodeTextInXhtml(channelTitle, out);
         out.print("</title>\n"
-          + "            <link>");
+            + "            <link>");
         encodeTextInXhtml(channelLink, out);
         out.print("</link>\n");
         if (imageWidth != null) {
@@ -428,15 +428,15 @@ public class RssServlet extends HttpServlet {
     // skipDays not supported
     for (News news : rssNews) {
       out.print("        <item>\n"
-        + "            <title>");
+          + "            <title>");
       encodeTextInXhtml(news.getTitle(), out);
       out.print("</title>\n"
-        + "            <link>");
+          + "            <link>");
       PageRef targetPageRef = PageRefResolver.getPageRef(
-        servletContext,
-        req,
-        news.getBook(),
-        news.getTargetPage()
+          servletContext,
+          req,
+          news.getBook(),
+          news.getTargetPage()
       );
       String targetServletPath;
       {
@@ -454,14 +454,14 @@ public class RssServlet extends HttpServlet {
         targetServletPath = sb.toString();
       }
       URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-        resp.encodeURL(
-          HttpServletUtil.getAbsoluteURL(
-            req,
-            targetServletPath
-          )
-        ),
-        textInXhtmlEncoder,
-        out
+          resp.encodeURL(
+              HttpServletUtil.getAbsoluteURL(
+                  req,
+                  targetServletPath
+              )
+          ),
+          textInXhtmlEncoder,
+          out
       );
       out.print("</link>\n");
 
@@ -499,11 +499,11 @@ public class RssServlet extends HttpServlet {
             // TODO: Automatic absolute links on body content of news tags, resetting on capturing other pages, or do we just trust RSS to correctly do relative links?
             // TODO: Register a LinkRenderer that forces absolute links
             body.writeTo(
-              new NodeBodyWriter(
-                recaptured,
-                encoder,
-                new ServletElementContext(servletContext, req, resp)
-              )
+                new NodeBodyWriter(
+                    recaptured,
+                    encoder,
+                    new ServletElementContext(servletContext, req, resp)
+                )
             );
             encoder.append("                </div>\n");
           }
@@ -521,33 +521,33 @@ public class RssServlet extends HttpServlet {
         guidServletPath = sb.toString();
       }
       URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-        resp.encodeURL(
-          HttpServletUtil.getAbsoluteURL(
-            req,
-            guidServletPath
-          )
-        ),
-        textInXhtmlEncoder,
-        out
+          resp.encodeURL(
+              HttpServletUtil.getAbsoluteURL(
+                  req,
+                  guidServletPath
+              )
+          ),
+          textInXhtmlEncoder,
+          out
       );
       out.print("</guid>\n"
-        + "            <pubDate>");
+          + "            <pubDate>");
       encodeTextInXhtml(rfc822.format(news.getPubDate().toDate()), out);
       out.print("</pubDate>\n");
       // source if from a different page
       if (!page.equals(newsPage)) {
         out.print("            <source url=\"");
         URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-          resp.encodeURL(
-            HttpServletUtil.getAbsoluteURL(
-              req,
-              URIEncoder.encodeURI(
-                RssUtils.getRssServletPath(newsPage)
-              )
-            )
-          ),
-          textInXhtmlAttributeEncoder,
-          out
+            resp.encodeURL(
+                HttpServletUtil.getAbsoluteURL(
+                    req,
+                    URIEncoder.encodeURI(
+                        RssUtils.getRssServletPath(newsPage)
+                    )
+                )
+            ),
+            textInXhtmlAttributeEncoder,
+            out
         );
         out.print("\">");
         encodeTextInXhtml(view.getTitle(servletContext, req, resp, newsPage), out);
@@ -556,6 +556,6 @@ public class RssServlet extends HttpServlet {
       out.print("        </item>\n");
     }
     out.print("    </channel>\n"
-      + "</rss>\n");
+        + "</rss>\n");
   }
 }

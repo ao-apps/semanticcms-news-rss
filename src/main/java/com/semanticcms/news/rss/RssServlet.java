@@ -23,10 +23,11 @@
 
 package com.semanticcms.news.rss;
 
-import com.aoapps.encoding.EncodingContext;
 import static com.aoapps.encoding.TextInXhtmlAttributeEncoder.textInXhtmlAttributeEncoder;
 import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+
+import com.aoapps.encoding.EncodingContext;
 import com.aoapps.encoding.TextWriter;
 import com.aoapps.encoding.XhtmlWriter;
 import com.aoapps.io.buffer.BufferResult;
@@ -73,9 +74,10 @@ import javax.servlet.http.HttpServletResponse;
  *   <li><a href="https://cyber.harvard.edu/rss/rss.html">https://cyber.harvard.edu/rss/rss.html</a></li>
  *   <li><a href="http://webdesign.about.com/od/rss/a/link_rss_feed.htm">http://webdesign.about.com/od/rss/a/link_rss_feed.htm</a></li>
  * </ul>
- *
+ * <p>
  * TODO: Generate or convert all relative paths to absolute paths to be in strict compliance with RSS.
  *       Then test on Android gReader app which does not currently handle relative paths.
+ * </p>
  */
 @WebServlet("*" + RssUtils.EXTENSION)
 public class RssServlet extends HttpServlet {
@@ -95,7 +97,7 @@ public class RssServlet extends HttpServlet {
   /**
    * See <a href="http://stackoverflow.com/questions/15247742/rfc-822-date-time-format-in-rss-2-0-feeds-cet-not-accepted">
    * http://stackoverflow.com/questions/15247742/rfc-822-date-time-format-in-rss-2-0-feeds-cet-not-accepted
-   * </a>
+   * </a>.
    */
   private static final String RFC_822_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
@@ -149,7 +151,7 @@ public class RssServlet extends HttpServlet {
       ServletContext servletContext,
       HttpServletRequest req,
       HttpServletResponse resp,
-      SemanticCMS semanticCMS
+      SemanticCMS semanticCms
   ) throws ServletException, IOException {
     // Path extra info not allowed
     if (req.getPathInfo() != null) {
@@ -160,14 +162,14 @@ public class RssServlet extends HttpServlet {
       return null;
     }
     String basePath;
-    {
-      String servletPath = req.getServletPath();
-      // Must end in expected extension
-      if (!servletPath.endsWith(RssUtils.EXTENSION)) {
-        return null;
+      {
+        String servletPath = req.getServletPath();
+        // Must end in expected extension
+        if (!servletPath.endsWith(RssUtils.EXTENSION)) {
+          return null;
+        }
+        basePath = servletPath.substring(0, servletPath.length() - RssUtils.EXTENSION.length());
       }
-      basePath = servletPath.substring(0, servletPath.length() - RssUtils.EXTENSION.length());
-    }
     // Try to find the page, jspx, then jsp, then direct URL without extension
     String pagePath = null;
     for (String extension : RssUtils.getResourceExtensions()) {
@@ -188,17 +190,17 @@ public class RssServlet extends HttpServlet {
       return null;
     }
     // Find book and path
-    Book book = semanticCMS.getBook(pagePath);
+    Book book = semanticCms.getBook(pagePath);
     PageRef pageRef;
-    {
-      if (book == null) {
-        return null;
+      {
+        if (book == null) {
+          return null;
+        }
+        pageRef = new PageRef(
+            book,
+            pagePath.substring(book.getPathPrefix().length())
+        );
       }
-      pageRef = new PageRef(
-          book,
-          pagePath.substring(book.getPathPrefix().length())
-      );
-    }
     // Capture the page
     return CapturePage.capturePage(
         servletContext,
@@ -214,9 +216,9 @@ public class RssServlet extends HttpServlet {
    *
    * @throws ServletException when cannot find the news view
    */
-  private static View findNewsView(SemanticCMS semanticCMS) throws ServletException {
+  private static View findNewsView(SemanticCMS semanticCms) throws ServletException {
     // Find the news view, which this RSS extends and iteroperates with
-    View view = semanticCMS.getViewsByName().get(NewsView.NAME);
+    View view = semanticCms.getViewsByName().get(NewsView.NAME);
     if (view == null) {
       throw new ServletException("View not found: " + NewsView.NAME);
     }
@@ -237,17 +239,17 @@ public class RssServlet extends HttpServlet {
     Map<String, String> bookParams = book.getParam();
     // Find the news
     int maxItems;
-    {
-      String maxItemsVal = getBookParam(bookParams, CHANNEL_PARAM_PREFIX + "maxItems");
-      if (maxItemsVal != null) {
-        maxItems = Integer.parseInt(maxItemsVal);
-        if (maxItems < 1) {
-          throw new ServletException("RSS maxItems may not be less than one: " + maxItems);
+      {
+        String maxItemsVal = getBookParam(bookParams, CHANNEL_PARAM_PREFIX + "maxItems");
+        if (maxItemsVal != null) {
+          maxItems = Integer.parseInt(maxItemsVal);
+          if (maxItems < 1) {
+            throw new ServletException("RSS maxItems may not be less than one: " + maxItems);
+          }
+        } else {
+          maxItems = DEFAULT_MAX_ITEMS;
         }
-      } else {
-        maxItems = DEFAULT_MAX_ITEMS;
       }
-    }
     List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page);
     if (allNews.size() > maxItems) {
       allNews = allNews.subList(0, maxItems);
@@ -260,9 +262,9 @@ public class RssServlet extends HttpServlet {
     try {
       HttpServletResponse resp = RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).get();
       ServletContext servletContext = getServletContext();
-      SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
+      SemanticCMS semanticCms = SemanticCMS.getInstance(servletContext);
       // Used several places below
-      Page page = findPage(servletContext, req, resp, semanticCMS);
+      Page page = findPage(servletContext, req, resp, semanticCms);
       if (page == null) {
         return -1;
       }
@@ -285,17 +287,17 @@ public class RssServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     ServletContext servletContext = getServletContext();
-    SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
+    SemanticCMS semanticCms = SemanticCMS.getInstance(servletContext);
     // Used several places below
-    Page page = findPage(servletContext, req, resp, semanticCMS);
+    Page page = findPage(servletContext, req, resp, semanticCms);
     if (page == null) {
       resp.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
     PageRef pageRef = page.getPageRef();
     Book book = page.getPageRef().getBook();
-    Map<String, String> bookParams = book.getParam();
-    View view = findNewsView(semanticCMS);
+    final Map<String, String> bookParams = book.getParam();
+    final View view = findNewsView(semanticCms);
     List<News> rssNews = findNews(
         servletContext,
         req,
@@ -319,22 +321,22 @@ public class RssServlet extends HttpServlet {
     out.print("</title>\n");
     StringBuilder sb = new StringBuilder();
     String channelLink;
-    {
-      sb.setLength(0);
-      URIEncoder.encodeURI(pageRef.getServletPath(), sb);
-      if (!view.isDefault()) {
-        sb.append("?view=");
-        URIEncoder.encodeURIComponent(view.getName(), sb);
+      {
+        sb.setLength(0);
+        URIEncoder.encodeURI(pageRef.getServletPath(), sb);
+        if (!view.isDefault()) {
+          sb.append("?view=");
+          URIEncoder.encodeURIComponent(view.getName(), sb);
+        }
+        channelLink = URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
+            resp.encodeURL(
+                HttpServletUtil.getAbsoluteURL(
+                    req,
+                    sb.toString()
+                )
+            )
+        );
       }
-      channelLink = URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-          resp.encodeURL(
-              HttpServletUtil.getAbsoluteURL(
-                  req,
-                  sb.toString()
-              )
-          )
-      );
-    }
     out.print("        <link>");
     encodeTextInXhtml(channelLink, out);
     out.print("</link>\n"
@@ -365,63 +367,63 @@ public class RssServlet extends HttpServlet {
     encodeTextInXhtml(DOCS, out);
     out.print("</docs>\n");
     writeChannelParamElement(bookParams, "ttl", out);
-    // image
-    {
-      String imageUrl = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "url");
-      String imageWidth = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "width");
-      String imageHeight = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "height");
-      String imageDescription = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "description");
-      if (imageUrl != null) {
-        out.print("        <image>\n"
-            + "            <url>");
-        URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-            resp.encodeURL(
-                HttpServletUtil.getAbsoluteURL(
-                    req,
-                    URIEncoder.encodeURI(
-                        book.getPathPrefix() + imageUrl
-                    )
-                )
-            ),
-            textInXhtmlEncoder,
-            out
-        );
-        out.print("</url>\n"
-            + "            <title>");
-        encodeTextInXhtml(channelTitle, out);
-        out.print("</title>\n"
-            + "            <link>");
-        encodeTextInXhtml(channelLink, out);
-        out.print("</link>\n");
-        if (imageWidth != null) {
-          out.print("            <width>");
-          encodeTextInXhtml(imageWidth, out);
-          out.print("</width>\n");
-        }
-        if (imageHeight != null) {
-          out.print("            <height>");
-          encodeTextInXhtml(imageHeight, out);
-          out.print("</height>\n");
-        }
-        if (imageDescription != null) {
-          out.print("            <description>");
-          encodeTextInXhtml(imageDescription, out);
-          out.print("</description>\n");
-        }
-        out.print("        </image>\n");
-      } else {
-        // Others must not be provided
-        if (imageWidth != null) {
-          throw new ServletException("RSS image width without url");
-        }
-        if (imageHeight != null) {
-          throw new ServletException("RSS image height without url");
-        }
-        if (imageDescription != null) {
-          throw new ServletException("RSS image description without url");
+      // image
+      {
+        String imageUrl = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "url");
+        String imageWidth = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "width");
+        String imageHeight = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "height");
+        String imageDescription = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "description");
+        if (imageUrl != null) {
+          out.print("        <image>\n"
+              + "            <url>");
+          URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
+              resp.encodeURL(
+                  HttpServletUtil.getAbsoluteURL(
+                      req,
+                      URIEncoder.encodeURI(
+                          book.getPathPrefix() + imageUrl
+                      )
+                  )
+              ),
+              textInXhtmlEncoder,
+              out
+          );
+          out.print("</url>\n"
+              + "            <title>");
+          encodeTextInXhtml(channelTitle, out);
+          out.print("</title>\n"
+              + "            <link>");
+          encodeTextInXhtml(channelLink, out);
+          out.print("</link>\n");
+          if (imageWidth != null) {
+            out.print("            <width>");
+            encodeTextInXhtml(imageWidth, out);
+            out.print("</width>\n");
+          }
+          if (imageHeight != null) {
+            out.print("            <height>");
+            encodeTextInXhtml(imageHeight, out);
+            out.print("</height>\n");
+          }
+          if (imageDescription != null) {
+            out.print("            <description>");
+            encodeTextInXhtml(imageDescription, out);
+            out.print("</description>\n");
+          }
+          out.print("        </image>\n");
+        } else {
+          // Others must not be provided
+          if (imageWidth != null) {
+            throw new ServletException("RSS image width without url");
+          }
+          if (imageHeight != null) {
+            throw new ServletException("RSS image height without url");
+          }
+          if (imageDescription != null) {
+            throw new ServletException("RSS image description without url");
+          }
         }
       }
-    }
     writeChannelParamElement(bookParams, "rating", out);
     // textInput not supported
     // skipHours not supported
@@ -439,21 +441,21 @@ public class RssServlet extends HttpServlet {
           news.getTargetPage()
       );
       String targetServletPath;
-      {
-        sb.setLength(0);
-        URIEncoder.encodeURI(targetPageRef.getServletPath(), sb);
-        if (!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
-          sb.append("?view=");
-          URIEncoder.encodeURIComponent(news.getView(), sb);
+        {
+          sb.setLength(0);
+          URIEncoder.encodeURI(targetPageRef.getServletPath(), sb);
+          if (!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
+            sb.append("?view=");
+            URIEncoder.encodeURIComponent(news.getView(), sb);
+          }
+          String element = news.getElement();
+          if (element != null) {
+            sb.append('#');
+            URIEncoder.encodeURIComponent(element, sb);
+          }
+          targetServletPath = sb.toString();
         }
-        String element = news.getElement();
-        if (element != null) {
-          sb.append('#');
-          URIEncoder.encodeURIComponent(element, sb);
-        }
-        targetServletPath = sb.toString();
-      }
-      URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+      URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
           resp.encodeURL(
               HttpServletUtil.getAbsoluteURL(
                   req,
@@ -513,14 +515,14 @@ public class RssServlet extends HttpServlet {
       // author possible here, but Author does not currently have email address
       out.print("            <guid>");
       String guidServletPath;
-      {
-        sb.setLength(0);
-        URIEncoder.encodeURI(newsPage.getPageRef().getServletPath(), sb);
-        sb.append('#');
-        URIEncoder.encodeURIComponent(news.getId(), sb);
-        guidServletPath = sb.toString();
-      }
-      URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+        {
+          sb.setLength(0);
+          URIEncoder.encodeURI(newsPage.getPageRef().getServletPath(), sb);
+          sb.append('#');
+          URIEncoder.encodeURIComponent(news.getId(), sb);
+          guidServletPath = sb.toString();
+        }
+      URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
           resp.encodeURL(
               HttpServletUtil.getAbsoluteURL(
                   req,
@@ -537,7 +539,7 @@ public class RssServlet extends HttpServlet {
       // source if from a different page
       if (!page.equals(newsPage)) {
         out.print("            <source url=\"");
-        URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+        URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
             resp.encodeURL(
                 HttpServletUtil.getAbsoluteURL(
                     req,

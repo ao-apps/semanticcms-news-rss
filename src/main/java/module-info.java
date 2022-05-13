@@ -35,4 +35,4 @@ module com.semanticcms.news.rss {
   requires com.semanticcms.news.model; // <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-model</artifactId>
   requires com.semanticcms.news.servlet; // <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-servlet</artifactId>
   requires com.semanticcms.news.view; // <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-view</artifactId>
-} // TODO: Avoiding rewrite-maven-plugin-4.22.2 truncation
+}

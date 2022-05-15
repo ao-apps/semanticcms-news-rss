@@ -491,7 +491,6 @@ public class RssServlet extends HttpServlet {
       if (description != null || bodyLen > 0) {
         out.print("            <description>\n");
         // Since description in RSS 2.0 allows HTML, and this is a text-only description, this has to be doubly encoded
-        // TODO: Verify this xhtml() actually does double-encoding and is not optimized away
         try (XhtmlWriter encoder = new TextWriter(EncodingContext.XML, textInXhtmlEncoder, out).xhtml()) {
           if (description != null) {
             encoder.append("                <div><em>").text(description).append("</em></div>\n");

@@ -46,7 +46,7 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
     <sonar.coverage.exclusions>**.*</sonar.coverage.exclusions>
   </properties>
 
-  <name>SemanticCMS News RSS²</name>
+  <name>SemanticCMS News RSS</name>
   <url>https://semanticcms.com/news/rss/</url>
   <description>RSS feeds for SemanticCMS newsfeeds.</description>
   <inceptionYear>2016</inceptionYear>

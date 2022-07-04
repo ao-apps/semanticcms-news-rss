@@ -36,15 +36,15 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
     <module.name>com.semanticcms.news.rss.book</module.name>
     <!-- These values are copied from the project being documented -->
     <documented.artifactId>semanticcms-news-rss</documented.artifactId>
-    <documented.name>SemanticCMS News RSS²</documented.name>
+    <documented.name>SemanticCMS News RSS</documented.name>
     <documented.description>RSS feeds for SemanticCMS newsfeeds.</documented.description>
 
     <description.html><![CDATA[Documentation for <a target="${javadoc.target}" href="${project.url}">${documented.name}</a> in <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a> format.]]></description.html>
   </properties>
 
-  <name>SemanticCMS News RSS² Book</name>
+  <name>SemanticCMS News RSS Book</name>
   <url>https://semanticcms.com/news/rss/</url>
-  <description>Documentation for SemanticCMS News RSS² in SemanticCMS format.</description>
+  <description>Documentation for SemanticCMS News RSS in SemanticCMS format.</description>
   <inceptionYear>2016</inceptionYear>
 
   <licenses>

@@ -10,12 +10,16 @@
 
 # Significant manual code formatting clean-up…
 cebe2fd351a63a66afda2556087d2567e9fcea94
+dc0ece38ef93db74ab7533772e76555754310c8a
 
 # Created AnyContent interface and AnyDocument base implementation
 e9e54591b0670ddaaf9a1727f37675e6daa7b091
+22122aaeef92def2591b531aad4663c68832d352
 
 # Performed automatic source code clean-up with rewrite-maven-plugin
 8dfab9440a29ff87f3c7ce4b4bf3397fa0e84d07
+500357ff6f431c4d1ded1b85e0248ab40462f33e
 
 # Performed manual checkstyle clean-up
 418e6d3237e416d35963fdcdb54218a0bc4c7c7f
+67ca336bd9ae161d2bb3e76d665cd32a5231da2c

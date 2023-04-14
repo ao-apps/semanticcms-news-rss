@@ -23,7 +23,7 @@ RSS feeds for [SemanticCMS newsfeeds](https://github.com/ao-apps/semanticcms-new
 * [Project Home](https://semanticcms.com/news/rss/)
 * [Changelog](https://semanticcms.com/news/rss/changelog)
 * [API Docs](https://semanticcms.com/news/rss/apidocs/)
-* [Maven Central Repository](https://central.sonatype.com/search?namespace=com.semanticcms&q=a%3Asemanticcms-news-rss)
+* [Maven Central Repository](https://central.sonatype.com/artifact/com.semanticcms/semanticcms-news-rss)
 * [GitHub](https://github.com/ao-apps/semanticcms-news-rss)
 
 ## Contact Us

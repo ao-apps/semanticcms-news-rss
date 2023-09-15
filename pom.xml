@@ -476,9 +476,9 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
       <!-- javaee-web-api-bom: <groupId>org.apache.taglibs</groupId><artifactId>taglibs-standard-spec</artifactId> -->
       <!-- Runtime Transitive -->
       <!-- javaee-web-api-bom: <groupId>org.apache.taglibs</groupId><artifactId>taglibs-standard-impl</artifactId> -->
-      <!-- BOM -->
+      <!-- Imports -->
       <dependency>
-        <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1${POST-SNAPSHOT}</version>
+        <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1-POST-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -531,6 +531,12 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
     </dependency>
     <dependency>
       <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-view</artifactId>
+    </dependency>
+    <!-- Imports (Reactor build order only) -->
+    <dependency>
+      <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1-POST-SNAPSHOT</version>
+      <type>pom</type>
+      <exclusions><exclusion><artifactId>*</artifactId><groupId>*</groupId></exclusion></exclusions>
     </dependency>
   </dependencies>
 </project>

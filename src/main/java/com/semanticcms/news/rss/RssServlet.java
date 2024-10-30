@@ -1,6 +1,6 @@
 /*
  * semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
- * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -74,10 +74,9 @@ import javax.servlet.http.HttpServletResponse;
  *   <li><a href="https://cyber.harvard.edu/rss/rss.html">https://cyber.harvard.edu/rss/rss.html</a></li>
  *   <li><a href="http://webdesign.about.com/od/rss/a/link_rss_feed.htm">http://webdesign.about.com/od/rss/a/link_rss_feed.htm</a></li>
  * </ul>
- * <p>
- * TODO: Generate or convert all relative paths to absolute paths to be in strict compliance with RSS.
- *       Then test on Android gReader app which does not currently handle relative paths.
- * </p>
+ *
+ * <p>TODO: Generate or convert all relative paths to absolute paths to be in strict compliance with RSS.
+ *       Then test on Android gReader app which does not currently handle relative paths.</p>
  */
 @WebServlet("*" + RssUtils.EXTENSION)
 public class RssServlet extends HttpServlet {

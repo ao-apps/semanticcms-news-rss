@@ -1,6 +1,6 @@
 /*
  * semanticcms-news-rss - RSS feeds for SemanticCMS newsfeeds.
- * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -161,14 +161,14 @@ public class RssServlet extends HttpServlet {
       return null;
     }
     String basePath;
-      {
-        String servletPath = req.getServletPath();
-        // Must end in expected extension
-        if (!servletPath.endsWith(RssUtils.EXTENSION)) {
-          return null;
-        }
-        basePath = servletPath.substring(0, servletPath.length() - RssUtils.EXTENSION.length());
+    {
+      String servletPath = req.getServletPath();
+      // Must end in expected extension
+      if (!servletPath.endsWith(RssUtils.EXTENSION)) {
+        return null;
       }
+      basePath = servletPath.substring(0, servletPath.length() - RssUtils.EXTENSION.length());
+    }
     // Try to find the page, jspx, then jsp, then direct URL without extension
     String pagePath = null;
     for (String extension : RssUtils.getResourceExtensions()) {
@@ -191,15 +191,15 @@ public class RssServlet extends HttpServlet {
     // Find book and path
     Book book = semanticCms.getBook(pagePath);
     PageRef pageRef;
-      {
-        if (book == null) {
-          return null;
-        }
-        pageRef = new PageRef(
-            book,
-            pagePath.substring(book.getPathPrefix().length())
-        );
+    {
+      if (book == null) {
+        return null;
       }
+      pageRef = new PageRef(
+          book,
+          pagePath.substring(book.getPathPrefix().length())
+      );
+    }
     // Capture the page
     return CapturePage.capturePage(
         servletContext,
@@ -238,17 +238,17 @@ public class RssServlet extends HttpServlet {
     Map<String, String> bookParams = book.getParam();
     // Find the news
     int maxItems;
-      {
-        String maxItemsVal = getBookParam(bookParams, CHANNEL_PARAM_PREFIX + "maxItems");
-        if (maxItemsVal != null) {
-          maxItems = Integer.parseInt(maxItemsVal);
-          if (maxItems < 1) {
-            throw new ServletException("RSS maxItems may not be less than one: " + maxItems);
-          }
-        } else {
-          maxItems = DEFAULT_MAX_ITEMS;
+    {
+      String maxItemsVal = getBookParam(bookParams, CHANNEL_PARAM_PREFIX + "maxItems");
+      if (maxItemsVal != null) {
+        maxItems = Integer.parseInt(maxItemsVal);
+        if (maxItems < 1) {
+          throw new ServletException("RSS maxItems may not be less than one: " + maxItems);
         }
+      } else {
+        maxItems = DEFAULT_MAX_ITEMS;
       }
+    }
     List<News> allNews = NewsUtils.findAllNews(servletContext, req, resp, page);
     if (allNews.size() > maxItems) {
       allNews = allNews.subList(0, maxItems);
@@ -320,22 +320,22 @@ public class RssServlet extends HttpServlet {
     out.print("</title>\n");
     StringBuilder sb = new StringBuilder();
     String channelLink;
-      {
-        sb.setLength(0);
-        URIEncoder.encodeURI(pageRef.getServletPath(), sb);
-        if (!view.isDefault()) {
-          sb.append("?view=");
-          URIEncoder.encodeURIComponent(view.getName(), sb);
-        }
-        channelLink = URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
-            resp.encodeURL(
-                HttpServletUtil.getAbsoluteURL(
-                    req,
-                    sb.toString()
-                )
-            )
-        );
+    {
+      sb.setLength(0);
+      URIEncoder.encodeURI(pageRef.getServletPath(), sb);
+      if (!view.isDefault()) {
+        sb.append("?view=");
+        URIEncoder.encodeURIComponent(view.getName(), sb);
       }
+      channelLink = URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
+          resp.encodeURL(
+              HttpServletUtil.getAbsoluteURL(
+                  req,
+                  sb.toString()
+              )
+          )
+      );
+    }
     out.print("        <link>");
     encodeTextInXhtml(channelLink, out);
     out.print("</link>\n"
@@ -366,63 +366,63 @@ public class RssServlet extends HttpServlet {
     encodeTextInXhtml(DOCS, out);
     out.print("</docs>\n");
     writeChannelParamElement(bookParams, "ttl", out);
-      // image
-      {
-        String imageUrl = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "url");
-        String imageWidth = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "width");
-        String imageHeight = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "height");
-        String imageDescription = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "description");
-        if (imageUrl != null) {
-          out.print("        <image>\n"
-              + "            <url>");
-          URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
-              resp.encodeURL(
-                  HttpServletUtil.getAbsoluteURL(
-                      req,
-                      URIEncoder.encodeURI(
-                          book.getPathPrefix() + imageUrl
-                      )
-                  )
-              ),
-              textInXhtmlEncoder,
-              out
-          );
-          out.print("</url>\n"
-              + "            <title>");
-          encodeTextInXhtml(channelTitle, out);
-          out.print("</title>\n"
-              + "            <link>");
-          encodeTextInXhtml(channelLink, out);
-          out.print("</link>\n");
-          if (imageWidth != null) {
-            out.print("            <width>");
-            encodeTextInXhtml(imageWidth, out);
-            out.print("</width>\n");
-          }
-          if (imageHeight != null) {
-            out.print("            <height>");
-            encodeTextInXhtml(imageHeight, out);
-            out.print("</height>\n");
-          }
-          if (imageDescription != null) {
-            out.print("            <description>");
-            encodeTextInXhtml(imageDescription, out);
-            out.print("</description>\n");
-          }
-          out.print("        </image>\n");
-        } else {
-          // Others must not be provided
-          if (imageWidth != null) {
-            throw new ServletException("RSS image width without url");
-          }
-          if (imageHeight != null) {
-            throw new ServletException("RSS image height without url");
-          }
-          if (imageDescription != null) {
-            throw new ServletException("RSS image description without url");
-          }
+    // image
+    {
+      String imageUrl = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "url");
+      String imageWidth = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "width");
+      String imageHeight = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "height");
+      String imageDescription = getBookParam(bookParams, IMAGE_PARAM_PREFIX + "description");
+      if (imageUrl != null) {
+        out.print("        <image>\n"
+            + "            <url>");
+        URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
+            resp.encodeURL(
+                HttpServletUtil.getAbsoluteURL(
+                    req,
+                    URIEncoder.encodeURI(
+                        book.getPathPrefix() + imageUrl
+                    )
+                )
+            ),
+            textInXhtmlEncoder,
+            out
+        );
+        out.print("</url>\n"
+            + "            <title>");
+        encodeTextInXhtml(channelTitle, out);
+        out.print("</title>\n"
+            + "            <link>");
+        encodeTextInXhtml(channelLink, out);
+        out.print("</link>\n");
+        if (imageWidth != null) {
+          out.print("            <width>");
+          encodeTextInXhtml(imageWidth, out);
+          out.print("</width>\n");
+        }
+        if (imageHeight != null) {
+          out.print("            <height>");
+          encodeTextInXhtml(imageHeight, out);
+          out.print("</height>\n");
+        }
+        if (imageDescription != null) {
+          out.print("            <description>");
+          encodeTextInXhtml(imageDescription, out);
+          out.print("</description>\n");
+        }
+        out.print("        </image>\n");
+      } else {
+        // Others must not be provided
+        if (imageWidth != null) {
+          throw new ServletException("RSS image width without url");
+        }
+        if (imageHeight != null) {
+          throw new ServletException("RSS image height without url");
+        }
+        if (imageDescription != null) {
+          throw new ServletException("RSS image description without url");
         }
       }
+    }
     writeChannelParamElement(bookParams, "rating", out);
     // textInput not supported
     // skipHours not supported
@@ -440,20 +440,20 @@ public class RssServlet extends HttpServlet {
           news.getTargetPage()
       );
       String targetServletPath;
-        {
-          sb.setLength(0);
-          URIEncoder.encodeURI(targetPageRef.getServletPath(), sb);
-          if (!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
-            sb.append("?view=");
-            URIEncoder.encodeURIComponent(news.getView(), sb);
-          }
-          String element = news.getElement();
-          if (element != null) {
-            sb.append('#');
-            URIEncoder.encodeURIComponent(element, sb);
-          }
-          targetServletPath = sb.toString();
+      {
+        sb.setLength(0);
+        URIEncoder.encodeURI(targetPageRef.getServletPath(), sb);
+        if (!news.getView().equals(SemanticCMS.DEFAULT_VIEW_NAME)) {
+          sb.append("?view=");
+          URIEncoder.encodeURIComponent(news.getView(), sb);
         }
+        String element = news.getElement();
+        if (element != null) {
+          sb.append('#');
+          URIEncoder.encodeURIComponent(element, sb);
+        }
+        targetServletPath = sb.toString();
+      }
       URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
           resp.encodeURL(
               HttpServletUtil.getAbsoluteURL(
@@ -513,13 +513,13 @@ public class RssServlet extends HttpServlet {
       // author possible here, but Author does not currently have email address
       out.print("            <guid>");
       String guidServletPath;
-        {
-          sb.setLength(0);
-          URIEncoder.encodeURI(newsPage.getPageRef().getServletPath(), sb);
-          sb.append('#');
-          URIEncoder.encodeURIComponent(news.getId(), sb);
-          guidServletPath = sb.toString();
-        }
+      {
+        sb.setLength(0);
+        URIEncoder.encodeURI(newsPage.getPageRef().getServletPath(), sb);
+        sb.append('#');
+        URIEncoder.encodeURIComponent(news.getId(), sb);
+        guidServletPath = sb.toString();
+      }
       URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
           resp.encodeURL(
               HttpServletUtil.getAbsoluteURL(

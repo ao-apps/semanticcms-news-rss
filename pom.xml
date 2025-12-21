@@ -114,20 +114,6 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
   <build>
     <plugins>
       <plugin>
-        <groupId>org.sonatype.ossindex.maven</groupId><artifactId>ossindex-maven-plugin</artifactId>
-        <configuration>
-          <excludeVulnerabilityIds>
-            <!--
-              Exclude sonatype-2020-0243: https://github.com/JodaOrg/joda-time-jsptags/pull/2
-              This is already mitigated by our PGP verification of all downloaded artifacts.
-              Plus, we always directly declare all transitive dependencies.
-              TODO: Remove in joda-time:joda-time-jsptags > 1.1.1
-            -->
-            <exclude>sonatype-2020-0243</exclude>
-          </excludeVulnerabilityIds>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId>
         <configuration>
           <!-- TODO: Clean-up SpotBugs -->
@@ -138,6 +124,30 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
   </build>
 
   <profiles>
+    <profile>
+      <id>audit-dependencies</id>
+      <activation>
+        <property><name>ossindex.skip</name><value>!true</value></property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.ossindex.maven</groupId><artifactId>ossindex-maven-plugin</artifactId>
+            <configuration>
+              <excludeVulnerabilityIds>
+                <!--
+                  Exclude sonatype-2020-0243: https://github.com/JodaOrg/joda-time-jsptags/pull/2
+                  This is already mitigated by our PGP verification of all downloaded artifacts.
+                  Plus, we always directly declare all transitive dependencies.
+                  TODO: Remove in joda-time:joda-time-jsptags > 1.1.1
+                -->
+                <exclude>sonatype-2020-0243</exclude>
+              </excludeVulnerabilityIds>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>offlineLinks</id><activation><file><exists>src/main/java</exists></file></activation>
       <build>

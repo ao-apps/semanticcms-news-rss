@@ -187,11 +187,6 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
                     </artifactItem>
                     <!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><classifier>javadoc</classifier> -->
                     <artifactItem>
-                      <groupId>joda-time</groupId><artifactId>joda-time</artifactId><classifier>javadoc</classifier>
-                      <includes>element-list, package-list</includes>
-                      <outputDirectory>${project.build.directory}/offlineLinks/joda-time/joda-time</outputDirectory>
-                    </artifactItem>
-                    <artifactItem>
                       <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-controller</artifactId><classifier>javadoc</classifier>
                       <includes>element-list, package-list</includes>
                       <outputDirectory>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-controller</outputDirectory>
@@ -262,10 +257,6 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
                   <location>${project.build.directory}/offlineLinks/com.aoapps/ao-servlet-util</location>
                 </offlineLink>
                 <!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><classifier>javadoc</classifier> -->
-                <offlineLink>
-                  <url>https://www.joda.org/joda-time/apidocs/</url>
-                  <location>${project.build.directory}/offlineLinks/joda-time/joda-time</location>
-                </offlineLink>
                 <offlineLink>
                   <url>https://semanticcms.com/core/controller/apidocs/</url>
                   <location>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-controller</location>
@@ -372,9 +363,6 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
         <groupId>com.aoapps</groupId><artifactId>ao-servlet-util</artifactId><version>6.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <!-- javaee-web-api-bom: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
-      <dependency>
-        <groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.14.0</version>
-      </dependency>
       <dependency>
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-controller</artifactId><version>3.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
@@ -517,9 +505,6 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>joda-time</groupId><artifactId>joda-time</artifactId>
     </dependency>
     <dependency>
       <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-controller</artifactId>

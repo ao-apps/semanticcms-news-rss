@@ -56,8 +56,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletContext;
@@ -92,13 +92,6 @@ public class RssServlet extends HttpServlet {
   private static final String IMAGE_PARAM_PREFIX = CHANNEL_PARAM_PREFIX + "image.";
 
   private static final String DOCS = "https://cyber.harvard.edu/rss/rss.html";
-
-  /**
-   * See <a href="http://stackoverflow.com/questions/15247742/rfc-822-date-time-format-in-rss-2-0-feeds-cet-not-accepted">
-   * http://stackoverflow.com/questions/15247742/rfc-822-date-time-format-in-rss-2-0-feeds-cet-not-accepted
-   * </a>.
-   */
-  private static final String RFC_822_FORMAT = "EEE, dd MMM yyyy HH:mm:ss Z";
 
   /**
    * The default max items to include.
@@ -276,7 +269,7 @@ public class RssServlet extends HttpServlet {
       if (rssNews == null || rssNews.isEmpty()) {
         return -1;
       }
-      return rssNews.get(0).getPubDate().getMillis();
+      return rssNews.get(0).getPubDate().toInstant().toEpochMilli();
     } catch (ServletException | IOException e) {
       log("getLastModified failed", e);
       return -1;
@@ -350,11 +343,10 @@ public class RssServlet extends HttpServlet {
     }
     writeChannelParamElement(bookParams, "managingEditor", out);
     writeChannelParamElement(bookParams, "webMaster", out);
-    DateFormat rfc822 = new SimpleDateFormat(RFC_822_FORMAT);
     // lastBuildDate is the most recent of the news items listed, which will have been sorted to the top of the news
     if (!rssNews.isEmpty()) {
       out.print("        <lastBuildDate>");
-      encodeTextInXhtml(rfc822.format(rssNews.get(0).getPubDate().toDate()), out);
+      encodeTextInXhtml(rssNews.get(0).getPubDate().toInstant().atZone(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME), out);
       out.print("</lastBuildDate>\n");
     }
     out.print("        <generator>");
@@ -532,7 +524,7 @@ public class RssServlet extends HttpServlet {
       );
       out.print("</guid>\n"
           + "            <pubDate>");
-      encodeTextInXhtml(rfc822.format(news.getPubDate().toDate()), out);
+      encodeTextInXhtml(news.getPubDate().toInstant().atZone(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME), out);
       out.print("</pubDate>\n");
       // source if from a different page
       if (!page.equals(newsPage)) {

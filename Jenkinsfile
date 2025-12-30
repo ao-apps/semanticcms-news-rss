@@ -34,7 +34,6 @@ def upstreamProjects = [
   '../../oss/net-types', // <groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId>
   '../../oss/servlet-util', // <groupId>com.aoapps</groupId><artifactId>ao-servlet-util</artifactId>
   // No Jenkins: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
-  // No Jenkins: <groupId>joda-time</groupId><artifactId>joda-time</artifactId>
   '../core/model', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-model</artifactId>
   '../core/servlet', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId>
   'model', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-model</artifactId>

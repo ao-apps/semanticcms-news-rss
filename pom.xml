@@ -310,7 +310,7 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
         <groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
-        <groupId>com.aoapps</groupId><artifactId>ao-servlet-util</artifactId><version>6.0.0${POST-SNAPSHOT}</version>
+        <groupId>com.aoapps</groupId><artifactId>ao-servlet-util</artifactId><version>6.0.1-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <!-- jakartaee-web-profile-bom: <groupId>jakarta.servlet</groupId><artifactId>jakarta.servlet-api</artifactId> -->
       <dependency>
@@ -387,7 +387,7 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
         <groupId>net.sargue</groupId><artifactId>java-time-jsptags</artifactId><version>2.0.2</version>
       </dependency>
       <dependency>
-        <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-taglib</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
+        <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-taglib</artifactId><version>2.0.1-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <dependency>
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-taglib</artifactId><version>2.0.1-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
@@ -396,10 +396,8 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-section-model</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
-        <groupId>com.semanticcms</groupId><artifactId>semanticcms-section-servlet</artifactId><version>2.0.0${POST-SNAPSHOT}</version>
+        <groupId>com.semanticcms</groupId><artifactId>semanticcms-section-servlet</artifactId><version>2.0.1-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
-      <!-- Runtime Transitive -->
-      <!-- jakartaee-web-profile-bom: <groupId>org.glassfish.web</groupId><artifactId>jakarta.servlet.jsp.jstl</artifactId> -->
       <!-- Imports -->
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>jakartaee-web-profile-bom</artifactId><version>10.0.0${POST-SNAPSHOT}</version>

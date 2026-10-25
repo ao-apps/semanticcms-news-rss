@@ -21,7 +21,6 @@
  * along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
  */
 module com.semanticcms.news.rss {
-  exports com.semanticcms.news.rss;
   // Direct
   requires com.aoapps.encoding; // <groupId>com.aoapps</groupId><artifactId>ao-encoding</artifactId>
   requires com.aoapps.io.buffer; // <groupId>com.aoapps</groupId><artifactId>ao-io-buffer</artifactId>
@@ -34,4 +33,6 @@ module com.semanticcms.news.rss {
   requires com.semanticcms.news.model; // <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-model</artifactId>
   requires com.semanticcms.news.servlet; // <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-servlet</artifactId>
   requires com.semanticcms.news.view; // <groupId>com.semanticcms</groupId><artifactId>semanticcms-news-view</artifactId>
+
+  exports com.semanticcms.news.rss;
 }

@@ -277,6 +277,7 @@ along with semanticcms-news-rss.  If not, see <https://www.gnu.org/licenses/>.
                   java-time-jsptags-2.0.2.jar
                 -->
                 <Automatic-Module-Name>${module.name}</Automatic-Module-Name>
+                <Include-Resource>{maven-resources}</Include-Resource>
                 <Private-Package>!.</Private-Package>
               </instructions>
             </configuration>
